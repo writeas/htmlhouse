@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Install Less via npm (Nodejs Package Manager)
+if [ ! -e "$(which lessc)" ] ; then
+    if [ ! -e "node_modules/.bin/lessc" ] ; then
+        npm install less
+    fi
+else
+    echo LESS $(npm view less version 2>&1 | grep -v WARN) is installed
+fi
