@@ -7,8 +7,13 @@ import (
 type config struct {
 	StaticDir string `env:"key=STATIC_DIR default=static"`
 
-	//	PrivateKey string `env:"key=PRIVATE_KEY require=true"`
-	//	PublicKey  string `env:"key=PUBLIC_KEY require=true"`
+	DBName     string `env:"key=DB_DB required=true"`
+	DBUser     string `env:"key=DB_USER required=true"`
+	DBPassword string `env:"key=DB_PASSWORD required=true"`
+	DBHost     string `env:"key=DB_HOST default=localhost"`
+
+	PrivateKey string `env:"key=PRIVATE_KEY require=true"`
+	PublicKey  string `env:"key=PUBLIC_KEY require=true"`
 
 	ServerPort int `env:"key=PORT default=8080"`
 }

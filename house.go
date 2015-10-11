@@ -11,7 +11,7 @@ func Serve() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//	defer app.close()
+	defer app.close()
 
 	n := negroni.Classic()
 	n.UseHandler(app.router)

@@ -1,6 +1,7 @@
 package htmlhouse
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -8,8 +9,10 @@ import (
 )
 
 type app struct {
-	cfg    *config
-	router *mux.Router
+	cfg     *config
+	router  *mux.Router
+	db      *sql.DB
+	session sessionManager
 }
 
 func newApp() (*app, error) {
@@ -22,38 +25,41 @@ func newApp() (*app, error) {
 		return app, err
 	}
 
+	app.session, err = newSessionManager(app.cfg)
+	if err != nil {
+		return app, err
+	}
+
+	err = app.initDatabase()
+	if err != nil {
+		return app, err
+	}
+
 	app.initRouter()
 
 	return app, nil
 }
 
+func (app *app) close() {
+	app.db.Close()
+}
+
 func (app *app) initRouter() {
 	app.router = mux.NewRouter()
 
-	/*
-		api := app.router.PathPrefix("/api/").Subrouter()
+	api := app.router.PathPrefix("/⌂/").Subrouter()
+	api.HandleFunc("/create", app.handler(createHouse)).Methods("POST").Name("create")
 
-		anon := api.PathPrefix("/anon/").Subrouter()
-		anon.HandleFunc("/signup", app.handler(signupAnonymous, authLevelNone)).Methods("POST").Name("signupAnon")
-
-		auth := api.PathPrefix("/auth/").Subrouter()
-		//	auth.HandleFunc("/", app.handler(login, authLevelNone)).Methods("POST").Name("login")
-		auth.HandleFunc("/", app.handler(logout, authLevelUser)).Methods("DELETE").Name("logout")
-		auth.HandleFunc("/signup", app.handler(signup, authLevelNone)).Methods("POST").Name("signup")
-
-		users := api.PathPrefix("/users/").Subrouter()
-		users.HandleFunc("/{username:[A-Za-z0-9.-]+}", app.handler(userByUsername, authLevelNone)).Methods("GET").Name("user")
-	*/
-
+	app.router.HandleFunc("/{house:[A-Za-z0-9.-]+}.html", app.handler(getHouse)).Methods("GET").Name("get")
 	app.router.PathPrefix("/").Handler(http.FileServer(http.Dir(app.cfg.StaticDir)))
 }
 
-type handlerFunc func(w http.ResponseWriter, r *http.Request) error
+type handlerFunc func(app *app, w http.ResponseWriter, r *http.Request) error
 
 func (app *app) handler(h handlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		handleError(w, r, func() error {
-			return h(w, r)
+			return h(app, w, r)
 		}())
 	}
 }
