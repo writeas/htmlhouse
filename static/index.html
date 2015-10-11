@@ -34,6 +34,7 @@
 				<a href="mailto:hello@html.house">contact</a>
 				<a href="https://write.as">by Write.as</a>
 			</nav>
+			<a id="publish" href="#">publish</a>
 		</header>
 
 		<pre id="editor">&lt;!DOCTYPE html>
@@ -75,6 +76,15 @@ editor.setTheme("ace/theme/chrome");
 editor.session.setMode("ace/mode/html");
 editor.getSession().on('change', updatePreview);
 updatePreview();
+
+$("#publish").on('click', function(e) {
+	e.preventDefault();
+	$.post("/⌂/create", {html: editor.getSession().getValue()}, function(data, status, xhr) {
+		if (data.meta.code == 201) {
+			window.location = '/' + data.data.id + '.html';
+		}
+	});
+});
 </script>
 <script type="text/javascript">
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
