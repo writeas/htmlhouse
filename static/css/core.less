@@ -39,6 +39,11 @@ body {
 			}
 			a {
 				color: #999;
+				&.current {
+					color: #666;
+					text-decoration: underline;
+					cursor: default;
+				}
 			}
 		}
 	}
@@ -196,6 +201,7 @@ input {
 
 #official-writing, #wrapper {
 	margin: 1em 2em;
+	font-size: 1.2em;
 	
 	h2, h3, h4 {
 		color: @subheaders;

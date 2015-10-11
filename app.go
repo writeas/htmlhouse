@@ -50,7 +50,7 @@ func (app *app) initRouter() {
 	api := app.router.PathPrefix("/⌂/").Subrouter()
 	api.HandleFunc("/create", app.handler(createHouse)).Methods("POST").Name("create")
 
-	app.router.HandleFunc("/{house:[A-Za-z0-9.-]+}.html", app.handler(getHouse)).Methods("GET").Name("get")
+	app.router.HandleFunc("/{house:[A-Za-z0-9.-]{8}}.html", app.handler(getHouse)).Methods("GET").Name("get")
 	app.router.PathPrefix("/").Handler(http.FileServer(http.Dir(app.cfg.StaticDir)))
 }
 
