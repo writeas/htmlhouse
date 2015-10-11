@@ -24,46 +24,6 @@
 		<meta property="og:url" content="https://html.house/" />
 		<meta property="og:description" content="Publish HTML with HTMLhouse." />
 
-		<style>
-		body {
-			font-size: 110%;
-		}
-		h1 { font-weight: 300; }
-		input {
-			font-size: 1.1em;
-			line-height: 1.5em;
-		}
-		input[type=email] {
-			border: 1px solid #ddd;
-		}
-		.contain-me {
-			text-align: left;
-			margin: 0 auto 4em;
-			max-width: 50em;
-		}
-		.contain-me h2 + p {
-			margin-left: 1.5em;
-			margin-right: 1.5em;
-			color: #333;
-		}
-		a:link, a:visited {
-			color: #777;
-		}
-		.half-col a img, a.dim {
-			opacity: 0.6;
-			transition: 0.2s;
-		}
-		.half-col a:hover img, a.dim:hover {
-			opacity: 0.8;
-		}
-		p {
-			line-height: 1.4;
-		}
-		a {
-			text-decoration: underline;
-		}
-		</style>
-
 	</head>
 	<body>
 		
@@ -123,18 +83,6 @@ updatePreview();
 
   ga('create', 'UA-47877053-8', 'auto');
   ga('send', 'pageview');
-
-  WebFontConfig = {
-    google: { families: [ 'Roboto:300:latin' ] }
-  };
-  (function() {
-    var wf = document.createElement('script');
-    wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
-  })();
 </script>
 	</body>
 </html>

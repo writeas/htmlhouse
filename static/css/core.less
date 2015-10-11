@@ -1,12 +1,13 @@
 @primary: rgb(114, 120, 191);
 @secondary: rgb(114, 191, 133);
 @subheaders: #444;
+@fonts: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
 
 body {
 	margin: 0;
 	padding: 0;
 	font-size: 100%;
-	font-family: Roboto, sans-serif;
+	font-family: @fonts;
 	color: #111;
 	
 	h1 {
@@ -38,9 +39,6 @@ body {
 			}
 			a {
 				color: #999;
-				&:hover {
-					text-decoration: underline;
-				}
 			}
 		}
 	}
@@ -141,9 +139,11 @@ body {
 	top: 5em;
 	bottom: 0;
 	font-size: 1em;
+	border-top: 1px solid #ccc;
 }
 
 #editor {
+	border-right: 1px solid #ccc;
 	right: 50%;
 	left: 0;
 }
@@ -164,6 +164,9 @@ header {
 
 a {
 	text-decoration: none;
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 hr {
@@ -174,43 +177,6 @@ hr {
 	margin: 4em auto;
 	text-align: center;
 }
-textarea, textarea:focus {
-	border: 0;
-}
-textarea, textarea:focus, input {
-	outline: 0;
-}
-textarea {
-	position: fixed;
-	top: 3em;
-	right: 0;
-	bottom: 2em;
-	left: 0;
-	width: 100%;
-	padding: 2em 2em 0 2em;
-	font-size: 2em;
-	box-sizing: border-box;
-	resize: none;
-}
-textarea, pre {
-	&.norm, &.sans, &.wrap {
-		line-height: 1.4em;
-		white-space: pre-wrap;       /* CSS 3 */
-		white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-		white-space: -pre-wrap;      /* Opera 4-6 */
-		white-space: -o-pre-wrap;    /* Opera 7 */
-		word-wrap: break-word;       /* Internet Explorer 5.5+ */
-	}
-	&.norm {
-		font-family: Roboto, sans-serif;
-	}
-	&.sans {
-		font-family: 'Open Sans', sans-serif;
-	}
-	&.mono, &.code {
-		max-width: none !important;
-	}
-}
 
 pre, .hljs {
 	margin: 0;
@@ -220,7 +186,7 @@ pre, .hljs {
 
 input {
 	padding: 0.5em;
-	font-family: Roboto, sans-serif;
+	font-family: @fonts;
 	&[type=submit] {
 		border: 1px solid @primary;
 		background: @primary;
@@ -228,55 +194,6 @@ input {
 	}
 }
 
-#beta {
-	max-width: 50em;
-	margin: 0 auto 3em;
-	font-size: 1.2em;
-
-	&.tight {
-		max-width: 30em;
-	}
-	.app {
-		+ .app {
-			margin-top: 1.5em;
-		}
-		h2 {
-			margin-bottom: 0.25em;
-		}
-		p {
-			margin-top: 0.25em;
-		}
-	}
-
-	h2.intro {
-		font-weight: normal;
-	}
-	p {
-		line-height: 1.4;
-	}
-	li {
-		margin: 0.3em 0;
-	}
-	h2 {
-		&.light {
-			font-weight: normal;
-		}
-		a {
-			.transition-duration(0.2s);
-			-moz-transition-property: color;
-			-webkit-transition-property: color;
-			-o-transition-property: color;
-			transition-property: color;
-
-			&:link, &:visited, &:hover {
-				color: @subheaders;
-			}
-			&:hover {
-				color: lighten(@subheaders, 10%);
-			}
-		}
-	}
-}
 #official-writing, #wrapper {
 	margin: 1em 2em;
 	
@@ -315,7 +232,7 @@ input {
 		font-family: serif;
 	}
 	.mode-typewriter {
-		font-family: monospace;
+		font-family: @fonts;
 	}
 }
 .clearfix {
@@ -337,37 +254,12 @@ input {
 }
 
 code {
-	font-family: monospace, monospace;
+	font-family: @fonts;
 	font-size: 1em;
 }
 
 #wrapper {
 	max-width: 50em;
-}
-#official-writing, #wrapper {
-	h2 {
-		&.major {
-			color: #222;
-		}
-		&.minor {
-			font-size: 1.3em;
-		}
-		&.bugfix {
-			font-size: 1.15em;
-			color: #666;
-		}
-
-		+.android-version {
-			margin-top: 0;
-			font-size: 1.1em;
-			a {
-				color: #999;
-				&:hover {
-					text-decoration: underline;
-				}
-			}
-		}
-	}
 }
 
 @media all and (min-width: 1280px) {
@@ -402,16 +294,11 @@ code {
 }
 
 @media all and (max-width: 600px) {
-	body#promo {
-		div.heading {
-			margin: 6em 0;
-		}
-		h2 {
-			font-size: 1.6em;
-		}
-		.half-col a + a {
-			margin-left: 1em;
-		}
+	#editor {
+		right: 0;
+	}
+	#preview {
+		display: none;
 	}
 }
 
