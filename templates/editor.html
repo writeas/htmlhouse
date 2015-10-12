@@ -50,9 +50,24 @@
 <script>
 //var $view = window.frames['preview'].document.getElementsByTag("body")[0];
 var typingTimer;
+var publishing = false;
+var $publishBtn = $("#publish");
+{{if .ID}}{{else}}var orig = "{{.Content}}";
+$publishBtn.addClass("no");{{end}}
+
 function updatePreview() {
 //	$view.innerHTML = editor.getSession().getValue();
-	$view.contents().find('body').html(editor.getSession().getValue());
+	var val = editor.getSession().getValue();
+	$view.contents().find('body').html(val);
+	{{if .ID}}{{else}}if (val != orig) {
+		publishing = false;
+		$publishBtn.removeClass("no");
+		$publishBtn.text("publish");
+	} else {
+		publishing = true;
+		$publishBtn.addClass("no");
+		$publishBtn.text("publish (edit first)");
+	}{{end}}
 }
 var editor = ace.edit("editor");
 var $view = $('#preview');
@@ -61,19 +76,22 @@ editor.session.setMode("ace/mode/html");
 editor.getSession().on('change', updatePreview);
 updatePreview();
 
-var publishing = false;
-$("#publish").on('click', function(e) {
+var token;
+var houses = JSON.parse(H.get('neighborhood', '[]'));
+for (var i=0; i<houses.length; i++) {
+	if (houses[i].id == "{{.ID}}") {
+		token = houses[i].token;
+		break;
+	}
+}
+{{if .ID}}if (typeof token === "undefined") {
+	$publishBtn.addClass("no");
+}{{else}}
+{{end}}
+$publishBtn.on('click', function(e) {
 	e.preventDefault();
 	if (publishing) {
 		return;
-	}
-	var token;
-	var houses = JSON.parse(H.get('neighborhood', '[]'));
-	for (var i=0; i<houses.length; i++) {
-		if (houses[i].id == "{{.ID}}") {
-			token = houses[i].token;
-			break;
-		}
 	}
 	publishing = true;
 	$.ajax({
