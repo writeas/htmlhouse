@@ -61,7 +61,7 @@ func renovateHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 
 	resUser := newSessionInfo(houseID)
 
-	return impart.WriteSuccess(w, resUser, http.StatusCreated)
+	return impart.WriteSuccess(w, resUser, http.StatusOK)
 }
 
 func getHouseHTML(app *app, houseID string) (string, error) {

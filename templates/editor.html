@@ -85,16 +85,18 @@ $("#publish").on('click', function(e) {
 		data: {html: editor.getSession().getValue()},
 		success: function(data, status, xhr) {
 			publishing = false;
-			if (data.meta.code == 201) {
+			{{if .ID}}if (data.meta.code == 200) { {{else}}if (data.meta.code == 201) {
 				var houses = JSON.parse(H.get('neighborhood', '[]'));
 				houses.push({id: data.data.id, token: xhr.getResponseHeader('Authorization')});
-				H.set('neighborhood', JSON.stringify(houses));
-
+				H.set('neighborhood', JSON.stringify(houses));{{end}}
 				window.location = '/' + data.data.id + '.html';
+			} else {
+				alert(data.meta.error_msg);
 			}
 		},
-		failure: function(data, status, xhr) {
+		error: function(jqXHR, status, error) {
 			publishing = false;
+			alert(error);
 		}
 	});
 });
