@@ -88,7 +88,9 @@ func getHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
+	watermark := "<div style='position: absolute;top:16px;right:16px;'><a href='/'>&lt;&#8962;/&gt;</a> &middot; <a href='/edit/" + houseID + ".html'>edit</a></div>"
+
 	// Print HTML
-	fmt.Fprintf(w, "%s", html)
+	fmt.Fprintf(w, "%s%s", html, watermark)
 	return nil
 }
