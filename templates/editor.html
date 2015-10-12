@@ -48,15 +48,12 @@
 <script src="/js/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://write.as/js/h.js"></script>
 <script>
-//var $view = window.frames['preview'].document.getElementsByTag("body")[0];
-var typingTimer;
 var publishing = false;
 var $publishBtn = $("#publish");
 {{if .ID}}{{else}}var orig = "{{.Content}}";
 $publishBtn.addClass("no");{{end}}
 
 function updatePreview() {
-//	$view.innerHTML = editor.getSession().getValue();
 	var val = editor.getSession().getValue();
 	$view.contents().find('body').html(val);
 	{{if .ID}}{{else}}if (val != orig) {
