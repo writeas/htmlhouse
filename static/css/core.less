@@ -30,6 +30,12 @@ body {
 		h1 {
 			display: inline;
 		}
+		a {
+			margin: 0 0 0 1em;
+			&:link, &:visited {
+				color: blue;
+			}
+		}
 		nav {
 			display: inline;
 			margin: 0 1em;
@@ -37,7 +43,7 @@ body {
 			span, a {
 				margin: 0 0 0 1em;
 			}
-			a {
+			a, a:link, a:visited {
 				color: #999;
 				&.current {
 					color: #666;

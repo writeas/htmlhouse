@@ -2,6 +2,9 @@ package htmlhouse
 
 import (
 	"database/sql"
+	"fmt"
+	"html/template"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -9,10 +12,11 @@ import (
 )
 
 type app struct {
-	cfg     *config
-	router  *mux.Router
-	db      *sql.DB
-	session sessionManager
+	cfg       *config
+	router    *mux.Router
+	db        *sql.DB
+	session   sessionManager
+	templates map[string]*template.Template
 }
 
 func newApp() (*app, error) {
@@ -35,6 +39,8 @@ func newApp() (*app, error) {
 		return app, err
 	}
 
+	app.initTemplates()
+
 	app.initRouter()
 
 	return app, nil
@@ -49,9 +55,41 @@ func (app *app) initRouter() {
 
 	api := app.router.PathPrefix("/⌂/").Subrouter()
 	api.HandleFunc("/create", app.handler(createHouse)).Methods("POST").Name("create")
+	api.HandleFunc("/{house:[A-Za-z0-9.-]{8}}", app.handler(renovateHouse)).Methods("POST").Name("update")
 
+	app.router.HandleFunc("/", app.handler(getEditor)).Methods("GET").Name("index")
+	app.router.HandleFunc("/edit/{house:[A-Za-z0-9.-]{8}}.html", app.handler(getEditor)).Methods("GET").Name("edit")
 	app.router.HandleFunc("/{house:[A-Za-z0-9.-]{8}}.html", app.handler(getHouse)).Methods("GET").Name("get")
 	app.router.PathPrefix("/").Handler(http.FileServer(http.Dir(app.cfg.StaticDir)))
+}
+
+type EditorPage struct {
+	ID      string
+	Content string
+}
+
+func getEditor(app *app, w http.ResponseWriter, r *http.Request) error {
+	vars := mux.Vars(r)
+	house := vars["house"]
+
+	if house == "" {
+		defaultPage, err := ioutil.ReadFile(app.cfg.StaticDir + "/default.html")
+		if err != nil {
+			fmt.Printf("\n%s\n", err)
+			defaultPage = []byte("<!DOCTYPE html>\n<html>\n</html>")
+		}
+		app.templates["editor"].ExecuteTemplate(w, "editor", &EditorPage{"", string(defaultPage)})
+
+		return nil
+	}
+
+	html, err := getHouseHTML(app, house)
+	if err != nil {
+		return err
+	}
+
+	app.templates["editor"].ExecuteTemplate(w, "editor", &EditorPage{house, html})
+	return nil
 }
 
 type handlerFunc func(app *app, w http.ResponseWriter, r *http.Request) error

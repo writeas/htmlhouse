@@ -33,18 +33,58 @@ func createHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 	return impart.WriteSuccess(w, resUser, http.StatusCreated)
 }
 
+func renovateHouse(app *app, w http.ResponseWriter, r *http.Request) error {
+	vars := mux.Vars(r)
+	houseID := vars["house"]
+	html := r.FormValue("html")
+	if strings.TrimSpace(html) == "" {
+		return impart.HTTPError{http.StatusBadRequest, "Supply something to publish."}
+	}
+
+	authHouseID, err := app.session.readToken(r)
+	if err != nil {
+		return err
+	}
+
+	if authHouseID != houseID {
+		return impart.HTTPError{http.StatusUnauthorized, "Bad token for this ⌂ house ⌂."}
+	}
+
+	_, err = app.db.Exec("UPDATE houses SET html = ? WHERE id = ?", html, houseID)
+	if err != nil {
+		return err
+	}
+
+	if err = app.session.writeToken(w, houseID); err != nil {
+		return err
+	}
+
+	resUser := newSessionInfo(houseID)
+
+	return impart.WriteSuccess(w, resUser, http.StatusCreated)
+}
+
+func getHouseHTML(app *app, houseID string) (string, error) {
+	var html string
+	err := app.db.QueryRow("SELECT html FROM houses WHERE id = ?", houseID).Scan(&html)
+	switch {
+	case err == sql.ErrNoRows:
+		return "", impart.HTTPError{http.StatusNotFound, "Return to sender. Address unknown."}
+	case err != nil:
+		fmt.Printf("Couldn't fetch: %v\n", err)
+		return "", err
+	}
+
+	return html, nil
+}
+
 func getHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 	vars := mux.Vars(r)
 	houseID := vars["house"]
 
 	// Fetch HTML
-	var html string
-	err := app.db.QueryRow("SELECT html FROM houses WHERE id = ?", houseID).Scan(&html)
-	switch {
-	case err == sql.ErrNoRows:
-		return impart.HTTPError{http.StatusNotFound, "Return to sender. Address unknown."}
-	case err != nil:
-		fmt.Printf("Couldn't fetch: %v\n", err)
+	html, err := getHouseHTML(app, houseID)
+	if err != nil {
 		return err
 	}
 

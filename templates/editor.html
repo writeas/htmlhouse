@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+{{define "editor"}}<!DOCTYPE HTML>
 <html>
 	<head>
 
@@ -30,32 +30,15 @@
 		<header>
 			<h1>HTMLhouse</h1>
 			<nav>
+				{{if .ID}}<a class="home" href="/">&lt;&#8962;/&gt;</a>{{end}}
 				<a href="/about.html">about</a>
 				<a href="mailto:hello@html.house">contact</a>
 			</nav>
-			<a id="publish" href="#">publish</a>
+			{{if .ID}}<a href="/{{.ID}}.html">view</a>{{end}}
+			<a id="publish" href="#">{{if .ID}}update{{else}}publish{{end}}</a>
 		</header>
 
-		<pre id="editor">&lt;!DOCTYPE html>
-&lt;html>
-	&lt;head>
-
-		&lt;title>HTMLhouse&lt;/title>
-
-		&lt;style type="text/css">
-		body {
-		    font-family: Helvetica, Tahoma, Arial, sans-serif;
-			font-size: 100%;
-			margin: 1em;
-		}
-		&lt;/style>
-
-	&lt;/head>
-	&lt;body>
-		&lt;h1>HTMLhouse&lt;/h1>
-		&lt;p>Welcome!&lt;/p>
-	&lt;/body>
-&lt;/html></pre>
+		<pre id="editor">{{.Content}}</pre>
 
 		<div id="preview-wrap">
 			<iframe id="preview"></iframe>
@@ -63,8 +46,10 @@
 
 <script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="/js/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://write.as/js/h.js"></script>
 <script>
 //var $view = window.frames['preview'].document.getElementsByTag("body")[0];
+var typingTimer;
 function updatePreview() {
 //	$view.innerHTML = editor.getSession().getValue();
 	$view.contents().find('body').html(editor.getSession().getValue());
@@ -76,11 +61,40 @@ editor.session.setMode("ace/mode/html");
 editor.getSession().on('change', updatePreview);
 updatePreview();
 
+var publishing = false;
 $("#publish").on('click', function(e) {
 	e.preventDefault();
-	$.post("/⌂/create", {html: editor.getSession().getValue()}, function(data, status, xhr) {
-		if (data.meta.code == 201) {
-			window.location = '/' + data.data.id + '.html';
+	if (publishing) {
+		return;
+	}
+	var token;
+	var houses = JSON.parse(H.get('neighborhood', '[]'));
+	for (var i=0; i<houses.length; i++) {
+		if (houses[i].id == "{{.ID}}") {
+			token = houses[i].token;
+			break;
+		}
+	}
+	publishing = true;
+	$.ajax({
+		type: "POST",
+		url: "/⌂/{{if .ID}}{{.ID}}{{else}}create{{end}}",{{if .ID}} 
+		beforeSend: function (request) {
+			request.setRequestHeader("Authorization", token);
+		},{{end}}
+		data: {html: editor.getSession().getValue()},
+		success: function(data, status, xhr) {
+			publishing = false;
+			if (data.meta.code == 201) {
+				var houses = JSON.parse(H.get('neighborhood', '[]'));
+				houses.push({id: data.data.id, token: xhr.getResponseHeader('Authorization')});
+				H.set('neighborhood', JSON.stringify(houses));
+
+				window.location = '/' + data.data.id + '.html';
+			}
+		},
+		failure: function(data, status, xhr) {
+			publishing = false;
 		}
 	});
 });
@@ -95,4 +109,4 @@ $("#publish").on('click', function(e) {
   ga('send', 'pageview');
 </script>
 	</body>
-</html>
+</html>{{end}}
