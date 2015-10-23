@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -78,6 +79,10 @@ func getHouseHTML(app *app, houseID string) (string, error) {
 	return html, nil
 }
 
+var (
+	htmlReg = regexp.MustCompile("<html( ?.*)>")
+)
+
 func getHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 	vars := mux.Vars(r)
 	houseID := vars["house"]
@@ -88,10 +93,24 @@ func getHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
+	// Add nofollow meta tag
+	if strings.Index(html, "<head>") == -1 {
+		html = htmlReg.ReplaceAllString(html, "<html$1><head></head>")
+	}
 	html = strings.Replace(html, "<head>", "<head><meta name=\"robots\" content=\"nofollow\" />", 1)
-	watermark := "<div style='position: absolute;top:16px;right:16px;'><a href='/'>&lt;&#8962;/&gt;</a> &middot; <a href='/edit/" + houseID + ".html'>edit</a></div>"
 
-	// Print HTML
-	fmt.Fprintf(w, "%s%s", html, watermark)
+	// Add links back to HTMLhouse
+	watermark := "<div style='position: absolute;top:16px;right:16px;'><a href='/'>&lt;&#8962;/&gt;</a> &middot; <a href='/edit/" + houseID + ".html'>edit</a></div>"
+	if strings.Index(html, "</body>") == -1 {
+		html = strings.Replace(html, "</html>", "</body></html>", 1)
+	}
+	html = strings.Replace(html, "</body>", fmt.Sprintf("%s</body>", watermark), 1)
+
+	// Print HTML, with sanity check in case someone did something crazy
+	if strings.Index(html, "<a href='/'>&lt;&#8962;/&gt;</a>") == -1 {
+		fmt.Fprintf(w, "%s%s", html, watermark)
+	} else {
+		fmt.Fprintf(w, "%s", html)
+	}
 	return nil
 }
