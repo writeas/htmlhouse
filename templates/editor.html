@@ -54,6 +54,8 @@ var $publishBtn = $("#publish");
 {{if .ID}}{{else}}var orig = "{{.Content}}";
 $publishBtn.addClass("no");{{end}}
 
+var houses = JSON.parse(H.get('neighborhood', '[]'));
+var hasBuilt = houses.length > 0;
 function updatePreview() {
 	var val = editor.getSession().getValue();
 	$view.contents().find('body').html(val);
@@ -64,7 +66,7 @@ function updatePreview() {
 	} else {
 		publishing = true;
 		$publishBtn.addClass("no");
-		$publishBtn.text("publish (edit first)");
+		$publishBtn.text("publish" + (!hasBuilt ? " (edit first)" : ""));
 	}{{end}}
 }
 var editor = ace.edit("editor");
@@ -74,15 +76,17 @@ editor.session.setMode("ace/mode/html");
 editor.getSession().on('change', updatePreview);
 updatePreview();
 
-var token;
-var houses = JSON.parse(H.get('neighborhood', '[]'));
+if (hasBuilt) {
+	$('header').append('<a href="/houses.html">my pages</a>');
+}
+{{if .ID}}var token;
 for (var i=0; i<houses.length; i++) {
 	if (houses[i].id == "{{.ID}}") {
 		token = houses[i].token;
 		break;
 	}
 }
-{{if .ID}}if (typeof token === "undefined") {
+if (typeof token === "undefined") {
 	$publishBtn.addClass("no");
 }{{else}}
 {{end}}
