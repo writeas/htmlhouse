@@ -3,6 +3,7 @@ package htmlhouse
 import (
 	"database/sql"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"regexp"
 	"strings"
@@ -90,6 +91,16 @@ func getHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 	// Fetch HTML
 	html, err := getHouseHTML(app, houseID)
 	if err != nil {
+		if err, ok := err.(impart.HTTPError); ok {
+			if err.Status == http.StatusNotFound {
+				page, err := ioutil.ReadFile(app.cfg.StaticDir + "/404.html")
+				if err != nil {
+					page = []byte("<!DOCTYPE html><html><body>HTMLlot.</body></html>")
+				}
+				fmt.Fprintf(w, "%s", page)
+				return nil
+			}
+		}
 		return err
 	}
 
