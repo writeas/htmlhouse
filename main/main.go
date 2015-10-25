@@ -1,6 +1,6 @@
 package main
 
-import "github.com/htmlhouse/house-web"
+import "github.com/writeas/htmlhouse"
 
 func main() {
 	htmlhouse.Serve()
