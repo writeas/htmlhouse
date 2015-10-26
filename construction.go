@@ -123,5 +123,10 @@ func getHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 	} else {
 		fmt.Fprintf(w, "%s", html)
 	}
+
+	if r.Method != "HEAD" && !bots.IsBot(r.UserAgent()) {
+		app.db.Exec("UPDATE houses SET view_count = view_count + 1 WHERE id = ?", houseID)
+	}
+
 	return nil
 }
