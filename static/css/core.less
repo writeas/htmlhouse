@@ -288,6 +288,22 @@ code {
 	max-width: 50em;
 }
 
+.stat {
+	display: inline-block;
+	font-size: 1.2em;
+	&+.stat {
+		margin-left: 1em;
+	}
+
+	.num {
+		font-weight: bold;
+	}
+	.label {
+		font-size: 0.9em;
+		color: #999;
+	}
+}
+
 @media all and (min-width: 1280px) {
 	body#promo {
 		div.heading {

@@ -20,4 +20,5 @@ func (app *app) initTemplates() {
 
 	// Initialize dynamic pages
 	initTemplate(app, "editor")
+	initTemplate(app, "stats")
 }

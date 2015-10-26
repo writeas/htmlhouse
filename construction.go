@@ -7,10 +7,12 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/writeas/impart"
 	"github.com/writeas/nerds/store"
+	"github.com/writeas/web-core/bots"
 )
 
 func createHouse(app *app, w http.ResponseWriter, r *http.Request) error {
@@ -64,6 +66,21 @@ func renovateHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 	resUser := newSessionInfo(houseID)
 
 	return impart.WriteSuccess(w, resUser, http.StatusOK)
+}
+
+func getHouseStats(app *app, houseID string) (*time.Time, int64, error) {
+	var created time.Time
+	var views int64
+	err := app.db.QueryRow("SELECT created, view_count FROM houses WHERE id = ?", houseID).Scan(&created, &views)
+	switch {
+	case err == sql.ErrNoRows:
+		return nil, 0, impart.HTTPError{http.StatusNotFound, "Return to sender. Address unknown."}
+	case err != nil:
+		fmt.Printf("Couldn't fetch: %v\n", err)
+		return nil, 0, err
+	}
+
+	return &created, views, nil
 }
 
 func getHouseHTML(app *app, houseID string) (string, error) {
@@ -127,6 +144,46 @@ func getHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 	if r.Method != "HEAD" && !bots.IsBot(r.UserAgent()) {
 		app.db.Exec("UPDATE houses SET view_count = view_count + 1 WHERE id = ?", houseID)
 	}
+	return nil
+}
+
+func viewHouseStats(app *app, w http.ResponseWriter, r *http.Request) error {
+	vars := mux.Vars(r)
+	houseID := vars["house"]
+
+	created, views, err := getHouseStats(app, houseID)
+	if err != nil {
+		if err, ok := err.(impart.HTTPError); ok {
+			if err.Status == http.StatusNotFound {
+				// TODO: put this logic in one place (shared with getHouse func)
+				page, err := ioutil.ReadFile(app.cfg.StaticDir + "/404.html")
+				if err != nil {
+					page = []byte("<!DOCTYPE html><html><body>HTMLlot.</body></html>")
+				}
+				fmt.Fprintf(w, "%s", page)
+				return nil
+			}
+		}
+		return err
+	}
+
+	viewsLbl := "view"
+	if views != 1 {
+		viewsLbl = "views"
+	}
+	app.templates["stats"].ExecuteTemplate(w, "stats", &HouseStats{
+		ID: houseID,
+		Stats: []Stat{
+			Stat{
+				Data:  fmt.Sprintf("%d", views),
+				Label: viewsLbl,
+			},
+			Stat{
+				Data:  created.Format(time.RFC1123),
+				Label: "created",
+			},
+		},
+	})
 
 	return nil
 }

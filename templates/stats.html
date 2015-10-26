@@ -1,0 +1,56 @@
+{{define "stats"}}<!DOCTYPE HTML>
+<html>
+	<head>
+
+		<title>{{.ID}}.html stats | HTMLhouse</title>
+		
+		<link rel="stylesheet" type="text/css" href="/css/house.css" />
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="icon" type="image/png" href="/img/favicon-chrome.png" sizes="192x192">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#888888" />
+
+		<meta name="description" content="Page stats for {{.ID}}.html">
+		<meta name="application-name" content="HTMLhouse">
+		<meta name="application-url" content="https://html.house">
+		<meta itemprop="name" content="{{.ID}}.html stats | HTMLhouse">
+		<meta itemprop="description" content="Page stats for {{.ID}}.html">
+		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:title" content="{{.ID}}.html stats | HTMLhouse">
+		<meta name="twitter:description" content="Page stats for {{.ID}}.html">
+		<meta property="og:title" content="{{.ID}}.html stats | HTMLhouse" />
+		<meta property="og:site_name" content="HTMLhouse" />
+		<meta property="og:type" content="object" />
+		<meta property="og:url" content="https://html.house/stats/{{.ID}}.html" />
+		<meta property="og:description" content="Page stats for {{.ID}}.html" />
+
+	</head>
+	<body>
+		
+		<header>
+			<h1>{{.ID}}.html stats</h1>
+			<nav>
+				<a class="home" href="/">&lt;&#8962;/&gt;</a>
+			</nav>
+			<a href="/{{.ID}}.html">view</a>
+			<a href="/edit/{{.ID}}.html">edit</a>
+		</header>
+
+		<div id="wrapper">
+			{{ range .Stats }}<div class="stat">
+				<span class="num">{{.Data}}</span>
+				<span class="label">{{.Label}}</span>
+			</div>{{end}}
+		</div>
+
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-47877053-8', 'auto');
+  ga('send', 'pageview');
+</script>
+	</body>
+</html>{{end}}
