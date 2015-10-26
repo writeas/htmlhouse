@@ -75,18 +75,18 @@ var $view = $('#preview');
 editor.setTheme("ace/theme/chrome");
 editor.session.setMode("ace/mode/html");
 editor.getSession().on('change', updatePreview);
-var saved = H.get('{{if .ID}}house{{.ID}}{{else}}constructionSite{{end}}', '');
+{{if .ID}}{{else}}var saved = H.get('constructionSite', '');
 if (saved !== '') {
 	editor.setValue(saved);
-}
+}{{end}}
 updatePreview();
 
-window.addEventListener('beforeunload', function(e) {
+{{if .ID}}{{else}}window.addEventListener('beforeunload', function(e) {
 	if (!justPublished) {
-		H.set('{{if .ID}}house{{.ID}}{{else}}constructionSite{{end}}', editor.getSession().getValue());
+		H.set('constructionSite', editor.getSession().getValue());
 	}
 	return null;
-});
+});{{end}}
 
 if (hasBuilt) {
 	$('header').append('<a href="/houses.html">my pages</a>');
@@ -122,7 +122,7 @@ $publishBtn.on('click', function(e) {
 				houses.push({id: data.data.id, token: xhr.getResponseHeader('Authorization')});
 				H.set('neighborhood', JSON.stringify(houses));{{end}}
 				justPublished = true;
-				H.remove('{{if .ID}}house{{.ID}}{{else}}constructionSite{{end}}');
+				{{if .ID}}{{else}}H.remove('constructionSite');{{end}}
 				window.location = '/' + data.data.id + '.html';
 			} else {
 				alert(data.meta.error_msg);
