@@ -39,7 +39,7 @@ func createHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 	resUser := newSessionInfo(houseID)
 
 	if public {
-		go addPublicAccess(app, r.Host, houseID, html)
+		go addPublicAccess(app, houseID, html)
 	}
 
 	return impart.WriteSuccess(w, resUser, http.StatusCreated)
@@ -72,7 +72,7 @@ func removePublicAccess(app *app, houseID string) error {
 	return nil
 }
 
-func addPublicAccess(app *app, host, houseID, html string) error {
+func addPublicAccess(app *app, houseID, html string) error {
 	// Parse title of page
 	title := titleReg.FindStringSubmatch(html)[1]
 	if !validTitle(title) {
@@ -87,7 +87,7 @@ func addPublicAccess(app *app, host, houseID, html string) error {
 
 	// Get thumbnail
 	data := url.Values{}
-	data.Set("url", fmt.Sprintf("%s/%s.html", host, houseID))
+	data.Set("url", fmt.Sprintf("%s/%s.html", app.cfg.HostName, houseID))
 
 	u, err := url.ParseRequestURI("http://peeper.html.house")
 	u.Path = "/"
@@ -158,7 +158,7 @@ func renovateHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 	resUser := newSessionInfo(houseID)
 
 	if public {
-		go addPublicAccess(app, r.Host, houseID, html)
+		go addPublicAccess(app, houseID, html)
 	} else {
 		go removePublicAccess(app, houseID)
 	}

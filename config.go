@@ -15,7 +15,8 @@ type config struct {
 	PrivateKey string `env:"key=PRIVATE_KEY require=true"`
 	PublicKey  string `env:"key=PUBLIC_KEY require=true"`
 
-	ServerPort int `env:"key=PORT default=8080"`
+	HostName   string `env:"key=HOST default=https://html.house"`
+	ServerPort int    `env:"key=PORT default=8080"`
 
 	AutoApprove bool   `env:"key=AUTO_APPROVE default=false"`
 	AdminPass   string `env:"key=ADMIN_PASS default=uhoh"`
