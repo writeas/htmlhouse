@@ -51,6 +51,7 @@ DB_USER=dbuser DB_PASSWORD=pass DB_DB=htmlhouse PRIVATE_KEY=keys/dev PUBLIC_KEY=
 | `PUBLIC_KEY` | Generated public key | None. **Required** |
 | `PORT` | Port to run app on | `8080` |
 | `STATIC_DIR` | Relative dir where static files are stored | `static` |
+| `AUTO_APPROVE` | Automatically approves public posts | false |
 
 ### Notes
 

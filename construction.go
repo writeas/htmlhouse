@@ -1,11 +1,14 @@
 package htmlhouse
 
 import (
+	"bytes"
 	"database/sql"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -20,6 +23,7 @@ func createHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 	if strings.TrimSpace(html) == "" {
 		return impart.HTTPError{http.StatusBadRequest, "Supply something to publish."}
 	}
+	public := r.FormValue("public") == "true"
 
 	houseID := store.GenerateFriendlyRandomString(8)
 
@@ -34,7 +38,80 @@ func createHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 
 	resUser := newSessionInfo(houseID)
 
+	if public {
+		go addPublicAccess(app, r.Host, houseID, html)
+	}
+
 	return impart.WriteSuccess(w, resUser, http.StatusCreated)
+}
+
+func validTitle(title string) bool {
+	return title != "" && strings.TrimSpace(title) != "HTMLhouse"
+}
+
+func removePublicAccess(app *app, houseID string) error {
+	_, err := app.db.Exec("DELETE FROM publichouses WHERE house_id = ?", houseID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func addPublicAccess(app *app, host, houseID, html string) error {
+	// Parse title of page
+	title := titleReg.FindStringSubmatch(html)[1]
+	if !validTitle(title) {
+		// <title/> was invalid, so look for an <h1/>
+		header := headerReg.FindStringSubmatch(html)[1]
+		if validTitle(header) {
+			// <h1/> was valid, so use that instead of <title/>
+			title = header
+		}
+	}
+	title = strings.TrimSpace(title)
+
+	// Get thumbnail
+	data := url.Values{}
+	data.Set("url", fmt.Sprintf("%s/%s.html", host, houseID))
+
+	u, err := url.ParseRequestURI("http://peeper.html.house")
+	u.Path = "/"
+	urlStr := fmt.Sprintf("%v", u)
+
+	client := &http.Client{}
+	r, err := http.NewRequest("POST", urlStr, bytes.NewBufferString(data.Encode()))
+	if err != nil {
+		fmt.Printf("Error creating request: %v", err)
+	}
+	r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	r.Header.Add("Content-Length", strconv.Itoa(len(data.Encode())))
+
+	var thumbURL string
+	resp, err := client.Do(r)
+	if err != nil {
+		fmt.Printf("Error requesting thumbnail: %v", err)
+		return impart.HTTPError{http.StatusInternalServerError, "Couldn't generate thumbnail"}
+	} else {
+		defer resp.Body.Close()
+		body, _ := ioutil.ReadAll(resp.Body)
+		if resp.StatusCode == http.StatusOK {
+			thumbURL = string(body)
+		}
+	}
+
+	// Add to public houses table
+	approved := sql.NullInt64{Valid: false}
+	if app.cfg.AutoApprove {
+		approved.Int64 = 1
+		approved.Valid = true
+	}
+	_, err = app.db.Exec("INSERT INTO publichouses (house_id, title, thumb_url, added, updated, approved) VALUES (?, ?, ?, NOW(), NOW(), ?) ON DUPLICATE KEY UPDATE title = ?, updated = NOW()", houseID, title, thumbURL, approved, title)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func renovateHouse(app *app, w http.ResponseWriter, r *http.Request) error {
@@ -44,6 +121,7 @@ func renovateHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 	if strings.TrimSpace(html) == "" {
 		return impart.HTTPError{http.StatusBadRequest, "Supply something to publish."}
 	}
+	public := r.FormValue("public") == "true"
 
 	authHouseID, err := app.session.readToken(r)
 	if err != nil {
@@ -64,6 +142,12 @@ func renovateHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 	}
 
 	resUser := newSessionInfo(houseID)
+
+	if public {
+		go addPublicAccess(app, r.Host, houseID, html)
+	} else {
+		go removePublicAccess(app, houseID)
+	}
 
 	return impart.WriteSuccess(w, resUser, http.StatusOK)
 }
@@ -97,8 +181,11 @@ func getHouseHTML(app *app, houseID string) (string, error) {
 	return html, nil
 }
 
+// regular expressions for extracting data
 var (
-	htmlReg = regexp.MustCompile("<html( ?.*)>")
+	htmlReg   = regexp.MustCompile("<html( ?.*)>")
+	titleReg  = regexp.MustCompile("<title>(.+)</title>")
+	headerReg = regexp.MustCompile("<h1>(.+)</h1>")
 )
 
 func getHouse(app *app, w http.ResponseWriter, r *http.Request) error {
@@ -219,4 +306,18 @@ func getPublicHouses(app *app) (*[]PublicHouse, error) {
 	}
 
 	return &houses, nil
+}
+
+func isHousePublic(app *app, houseID string) bool {
+	var dummy int64
+	err := app.db.QueryRow("SELECT 1 FROM publichouses WHERE house_id = ?", houseID).Scan(&dummy)
+	switch {
+	case err == sql.ErrNoRows:
+		return false
+	case err != nil:
+		fmt.Printf("Couldn't fetch: %v\n", err)
+		return false
+	}
+
+	return true
 }

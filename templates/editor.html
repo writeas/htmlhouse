@@ -37,6 +37,7 @@
 			</nav>
 			{{if .ID}}<a href="/{{.ID}}.html">view</a>{{end}}
 			<a id="publish" href="#">{{if .ID}}update{{else}}publish{{end}}</a>
+			<input type="checkbox" name="public" id="public"{{if .Public}} checked="checked"{{end}} /><label for="public">public</label>
 		</header>
 
 		<pre id="editor">{{.Content}}</pre>
@@ -51,6 +52,7 @@
 <script>
 var publishing = false;
 var $publishBtn = $("#publish");
+var $publicCheck = document.getElementById("public");
 {{if .ID}}{{else}}var orig = "{{.Content}}";
 $publishBtn.addClass("no");{{end}}
 
@@ -114,7 +116,7 @@ $publishBtn.on('click', function(e) {
 		beforeSend: function (request) {
 			request.setRequestHeader("Authorization", token);
 		},{{end}}
-		data: {html: editor.getSession().getValue()},
+		data: {html: editor.getSession().getValue(), public: $publicCheck.checked ? "true" : ""},
 		success: function(data, status, xhr) {
 			publishing = false;
 			{{if .ID}}if (data.meta.code == 200) { {{else}}if (data.meta.code == 201) {

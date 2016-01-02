@@ -16,6 +16,8 @@ type config struct {
 	PublicKey  string `env:"key=PUBLIC_KEY require=true"`
 
 	ServerPort int `env:"key=PORT default=8080"`
+
+	AutoApprove bool `env:"key=AUTO_APPROVE default=false"`
 }
 
 func newConfig() (*config, error) {

@@ -68,6 +68,7 @@ func (app *app) initRouter() {
 type EditorPage struct {
 	ID      string
 	Content string
+	Public  bool
 }
 
 func getEditor(app *app, w http.ResponseWriter, r *http.Request) error {
@@ -80,7 +81,7 @@ func getEditor(app *app, w http.ResponseWriter, r *http.Request) error {
 			fmt.Printf("\n%s\n", err)
 			defaultPage = []byte("<!DOCTYPE html>\n<html>\n</html>")
 		}
-		app.templates["editor"].ExecuteTemplate(w, "editor", &EditorPage{"", string(defaultPage)})
+		app.templates["editor"].ExecuteTemplate(w, "editor", &EditorPage{"", string(defaultPage), false})
 
 		return nil
 	}
@@ -90,7 +91,7 @@ func getEditor(app *app, w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	app.templates["editor"].ExecuteTemplate(w, "editor", &EditorPage{house, html})
+	app.templates["editor"].ExecuteTemplate(w, "editor", &EditorPage{house, html, isHousePublic(app, house)})
 	return nil
 }
 
