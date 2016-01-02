@@ -61,6 +61,7 @@ func (app *app) initRouter() {
 	app.router.HandleFunc("/edit/{house:[A-Za-z0-9.-]{8}}.html", app.handler(getEditor)).Methods("GET").Name("edit")
 	app.router.HandleFunc("/stats/{house:[A-Za-z0-9.-]{8}}.html", app.handler(viewHouseStats)).Methods("GET").Name("stats")
 	app.router.HandleFunc("/{house:[A-Za-z0-9.-]{8}}.html", app.handler(getHouse)).Methods("GET").Name("get")
+	app.router.HandleFunc("/browse", app.handler(viewHouses)).Methods("GET").Name("browse")
 	app.router.PathPrefix("/").Handler(http.FileServer(http.Dir(app.cfg.StaticDir)))
 }
 
