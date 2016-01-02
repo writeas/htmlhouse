@@ -159,6 +159,31 @@ body {
 	}
 }
 
+.open-house {
+	display: inline;
+	margin: 2em;
+	float: left;
+
+	img {
+		border: 1px solid #ccc;
+		display: block;
+		max-width: 320px;
+		max-height: 240px;
+		.opacity(.6);
+		.transition-duration(0.3s);
+	}
+	a:hover img {
+		.opacity(1);
+	}
+
+	.house-name {
+		margin-top: 1em;
+		font-size: 1.4em;
+		text-align: center;
+		display: block;
+	}
+}
+
 #editor, #preview-wrap {
 	position: absolute;
 	top: 5em;

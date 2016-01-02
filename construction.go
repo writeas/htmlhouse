@@ -187,3 +187,36 @@ func viewHouseStats(app *app, w http.ResponseWriter, r *http.Request) error {
 
 	return nil
 }
+
+func viewHouses(app *app, w http.ResponseWriter, r *http.Request) error {
+	houses, err := getPublicHouses(app)
+	if err != nil {
+		fmt.Fprintf(w, ":(")
+		return err
+	}
+
+	app.templates["browse"].ExecuteTemplate(w, "browse", struct{ Houses *[]PublicHouse }{houses})
+
+	return nil
+}
+
+func getPublicHouses(app *app) (*[]PublicHouse, error) {
+	houses := []PublicHouse{}
+	rows, err := app.db.Query("SELECT house_id, title, thumb_url FROM publichouses WHERE approved = 1 ORDER BY updated DESC LIMIT 10")
+	switch {
+	case err == sql.ErrNoRows:
+		return nil, impart.HTTPError{http.StatusNotFound, "Return to sender. Address unknown."}
+	case err != nil:
+		fmt.Printf("Couldn't fetch: %v\n", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	house := &PublicHouse{}
+	for rows.Next() {
+		err = rows.Scan(&house.ID, &house.Title, &house.ThumbURL)
+		houses = append(houses, *house)
+	}
+
+	return &houses, nil
+}
