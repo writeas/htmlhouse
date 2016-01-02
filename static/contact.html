@@ -1,8 +1,8 @@
-{{define "stats"}}<!DOCTYPE HTML>
+<!DOCTYPE HTML>
 <html>
 	<head>
 
-		<title>{{.ID}}.html stats | HTMLhouse</title>
+		<title>Contact HTMLhouse</title>
 		
 		<link rel="stylesheet" type="text/css" href="/css/house.css" />
 		<link rel="shortcut icon" href="/favicon.ico" />
@@ -10,39 +10,36 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="theme-color" content="#888888" />
 
-		<meta name="description" content="Page stats for {{.ID}}.html">
+		<meta name="description" content="Contact the team at HTMLhouse.">
 		<meta name="application-name" content="HTMLhouse">
 		<meta name="application-url" content="https://html.house">
-		<meta itemprop="name" content="{{.ID}}.html stats | HTMLhouse">
-		<meta itemprop="description" content="Page stats for {{.ID}}.html">
+		<meta itemprop="name" content="Contact HTMLhouse">
+		<meta itemprop="description" content="Contact the team at HTMLhouse.">
 		<meta name="twitter:card" content="summary_large_image">
-		<meta name="twitter:title" content="{{.ID}}.html stats | HTMLhouse">
-		<meta name="twitter:description" content="Page stats for {{.ID}}.html">
-		<meta property="og:title" content="{{.ID}}.html stats | HTMLhouse" />
+		<meta name="twitter:title" content="Contact HTMLhouse">
+		<meta name="twitter:description" content="Contact the team at HTMLhouse.">
+		<meta property="og:title" content="Contact HTMLhouse" />
 		<meta property="og:site_name" content="HTMLhouse" />
 		<meta property="og:type" content="object" />
-		<meta property="og:url" content="https://html.house/stats/{{.ID}}.html" />
-		<meta property="og:description" content="Page stats for {{.ID}}.html" />
+		<meta property="og:url" content="https://html.house/contact.html" />
+		<meta property="og:description" content="Contact the team at HTMLhouse." />
 
 	</head>
 	<body>
 		
 		<header>
-			<h1>{{.ID}}.html stats</h1>
+			<h1>HTMLhouse</h1>
 			<nav>
 				<a class="home" href="/">&lt;&#8962;/&gt;</a>
+				<a href="/browse">browse</a>
 				<a href="/about.html">about</a>
-				<a href="/contact.html">contact</a>
+				<a class="current" href="/contact.html">contact</a>
 			</nav>
-			<a href="/{{.ID}}.html">view</a>
-			<a href="/edit/{{.ID}}.html">edit</a>
 		</header>
 
 		<div id="wrapper">
-			{{ range .Stats }}<div class="stat">
-				<span class="num">{{.Data}}</span>
-				<span class="label">{{.Label}}</span>
-			</div>{{end}}
+			<h2>Contact Us</h2>
+			<p>Have a question or some feedback? Let us know through <a href="mailto:hello@write.as?subject=Feedback+on+HTMLhouse">email</a>, <a href="https://twitter.com/htmlhouse">Twitter</a>, or the <strong>#htmlhouse</strong> channel in our <a href="http://slack.write.as/">Slack group</a>.</p>
 		</div>
 
 <script type="text/javascript">
@@ -55,4 +52,4 @@
   ga('send', 'pageview');
 </script>
 	</body>
-</html>{{end}}
+</html>
