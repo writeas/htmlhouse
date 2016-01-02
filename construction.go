@@ -50,9 +50,23 @@ func validTitle(title string) bool {
 }
 
 func removePublicAccess(app *app, houseID string) error {
-	_, err := app.db.Exec("DELETE FROM publichouses WHERE house_id = ?", houseID)
-	if err != nil {
-		return err
+	var approved sql.NullInt64
+	err := app.db.QueryRow("SELECT approved FROM houses WHERE id = ?", houseID).Scan(&approved)
+	switch {
+	case err == sql.ErrNoRows:
+		return nil
+	case err != nil:
+		fmt.Printf("Couldn't fetch for public removal: %v\n", err)
+		return nil
+	}
+
+	if approved.Valid && approved.Int64 == 0 {
+		// Page has been banned, so do nothing
+	} else {
+		_, err = app.db.Exec("DELETE FROM publichouses WHERE house_id = ?", houseID)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -321,4 +335,22 @@ func isHousePublic(app *app, houseID string) bool {
 	}
 
 	return true
+}
+
+func banHouse(app *app, w http.ResponseWriter, r *http.Request) error {
+	houseID := r.FormValue("house")
+	pass := r.FormValue("pass")
+	if app.cfg.AdminPass != pass {
+		w.WriteHeader(http.StatusNotFound)
+		return nil
+	}
+
+	_, err := app.db.Exec("UPDATE publichouses SET approved = 0 WHERE house_id = ?", houseID)
+	if err != nil {
+		fmt.Fprintf(w, "Couldn't ban house: %v", err)
+		return err
+	}
+
+	fmt.Fprintf(w, "BOOM! %s banned.", houseID)
+	return nil
 }
