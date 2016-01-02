@@ -47,6 +47,8 @@ DB_USER=dbuser DB_PASSWORD=pass DB_DB=htmlhouse PRIVATE_KEY=keys/dev PUBLIC_KEY=
 | `DB_PASSWORD` | Database password | None. **Required** |
 | `DB_DB` | Database name | None. **Required** |
 | `DB_HOST` | Database host | `localhost` |
+| `PRIVATE_KEY` | Generated private key | None. **Required** |
+| `PUBLIC_KEY` | Generated public key | None. **Required** |
 | `PORT` | Port to run app on | `8080` |
 | `STATIC_DIR` | Relative dir where static files are stored | `static` |
 
