@@ -28,7 +28,7 @@
 	<body>
 		
 		<header>
-			<h1>Browse</h1>
+			<h1>Browse HTMLhouse</h1>
 			<nav>
 				<a class="home" href="/">&lt;&#8962;/&gt;</a>
 				<a class="current" href="/browse">browse</a>
@@ -38,7 +38,7 @@
 		</header>
 
 		{{ range .Houses }}<div class="open-house">
-			<a href="https://html.house/{{.ID}}"><img src="http://peeper.html.house/{{.ThumbURL}}" />
+			<a href="/{{.ID}}.html"><img src="http://peeper.html.house/{{.ThumbURL}}" />
 			<div class="house-name">{{.Title}}</div></a>
 		</div>{{end}}
 
