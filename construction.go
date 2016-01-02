@@ -215,14 +215,15 @@ func getHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 	html = strings.Replace(html, "<head>", "<head><meta name=\"robots\" content=\"nofollow\" />", 1)
 
 	// Add links back to HTMLhouse
-	watermark := "<div style='position: absolute;top:16px;right:16px;'><a href='/'>&lt;&#8962;/&gt;</a> &middot; <a href='/edit/" + houseID + ".html'>edit</a></div>"
+	homeLink := "<a href='/'>&lt;&#8962;/&gt;</a>"
+	watermark := fmt.Sprintf("<div style='position: absolute;top:16px;right:16px;'>%s &middot; <a href='/stats/%s.html'>stats</a> &middot; <a href='/edit/%s.html'>edit</a></div>", homeLink, houseID, houseID)
 	if strings.Index(html, "</body>") == -1 {
 		html = strings.Replace(html, "</html>", "</body></html>", 1)
 	}
 	html = strings.Replace(html, "</body>", fmt.Sprintf("%s</body>", watermark), 1)
 
 	// Print HTML, with sanity check in case someone did something crazy
-	if strings.Index(html, "<a href='/'>&lt;&#8962;/&gt;</a>") == -1 {
+	if strings.Index(html, homeLink) == -1 {
 		fmt.Fprintf(w, "%s%s", html, watermark)
 	} else {
 		fmt.Fprintf(w, "%s", html)
