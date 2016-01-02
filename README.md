@@ -11,6 +11,8 @@ No user signup is required -- authorization to modify an individual published pa
 
 It is also available as a [Chrome extension](https://chrome.google.com/webstore/detail/htmlhouse/aljfacibkadhobknaalpfbclcpoepopi).
 
+[![Public Slack discussion](http://slack.write.as/badge.svg)](http://slack.write.as/)
+
 ## Development
 
 ### Requirements
