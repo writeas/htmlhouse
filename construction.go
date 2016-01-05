@@ -51,7 +51,7 @@ func validTitle(title string) bool {
 
 func removePublicAccess(app *app, houseID string) error {
 	var approved sql.NullInt64
-	err := app.db.QueryRow("SELECT approved FROM houses WHERE id = ?", houseID).Scan(&approved)
+	err := app.db.QueryRow("SELECT approved FROM publichouses WHERE house_id = ?", houseID).Scan(&approved)
 	switch {
 	case err == sql.ErrNoRows:
 		return nil
