@@ -296,7 +296,7 @@ func viewHouseStats(app *app, w http.ResponseWriter, r *http.Request) error {
 func viewHouses(app *app, w http.ResponseWriter, r *http.Request) error {
 	houses, err := getPublicHouses(app)
 	if err != nil {
-		fmt.Fprintf(w, ":(")
+		fmt.Printf("Couln't load houses: %v", err)
 		return err
 	}
 
