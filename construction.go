@@ -126,7 +126,7 @@ func addPublicAccess(app *app, houseID, html string) error {
 	}
 
 	// Tweet about it
-	tweet(app, houseID, fmt.Sprintf("\"%s\" on #HTMLhouse - %s/%s.html #html #website", title, app.cfg.HostName, houseID))
+	tweet(app, houseID, title)
 
 	return nil
 }

@@ -6,7 +6,12 @@ import (
 	"github.com/ChimeraCoder/anaconda"
 )
 
-func tweet(app *app, houseID, text string) {
+func tweet(app *app, houseID, title string) {
+	// Check for blacklisted titles
+	if title == "HTMLhouse" {
+		return
+	}
+
 	// Check if this has already been tweeted
 	var tweetID int64
 	err := app.db.QueryRow("SELECT tweet_id FROM tweetedhouses WHERE house_id = ?", houseID).Scan(&tweetID)
@@ -20,6 +25,8 @@ func tweet(app *app, houseID, text string) {
 	}
 
 	// Post to Twitter
+	text := fmt.Sprintf("\"%s\" on #HTMLhouse - %s/%s.html #html #web #website", title, app.cfg.HostName, houseID)
+
 	anaconda.SetConsumerKey(app.cfg.TwitterConsumerKey)
 	anaconda.SetConsumerSecret(app.cfg.TwitterConsumerSecret)
 	api := anaconda.NewTwitterApi(app.cfg.TwitterToken, app.cfg.TwitterTokenSecret)
