@@ -21,6 +21,12 @@ type config struct {
 	AutoApprove bool   `env:"key=AUTO_APPROVE default=false"`
 	AdminPass   string `env:"key=ADMIN_PASS default=uhoh"`
 	BrowseItems int    `env:"key=BROWSE_ITEMS default=10"`
+
+	// Twitter configuration
+	TwitterConsumerKey    string `env:"key=TWITTER_KEY default=notreal"`
+	TwitterConsumerSecret string `env:"key=TWITTER_SECRET default=notreal"`
+	TwitterToken          string `env:"key=TWITTER_TOKEN default=notreal"`
+	TwitterTokenSecret    string `env:"key=TWITTER_TOKEN_SECRET default=notreal"`
 }
 
 func newConfig() (*config, error) {
