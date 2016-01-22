@@ -20,6 +20,7 @@ type config struct {
 
 	AutoApprove bool   `env:"key=AUTO_APPROVE default=false"`
 	AdminPass   string `env:"key=ADMIN_PASS default=uhoh"`
+	BrowseItems int    `env:"key=BROWSE_ITEMS default=10"`
 }
 
 func newConfig() (*config, error) {

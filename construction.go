@@ -304,7 +304,7 @@ func viewHouses(app *app, w http.ResponseWriter, r *http.Request) error {
 
 func getPublicHouses(app *app) (*[]PublicHouse, error) {
 	houses := []PublicHouse{}
-	rows, err := app.db.Query("SELECT house_id, title, thumb_url FROM publichouses WHERE approved = 1 ORDER BY updated DESC LIMIT 10")
+	rows, err := app.db.Query(fmt.Sprintf("SELECT house_id, title, thumb_url FROM publichouses WHERE approved = 1 ORDER BY updated DESC LIMIT %d", app.cfg.BrowseItems))
 	switch {
 	case err == sql.ErrNoRows:
 		return nil, impart.HTTPError{http.StatusNotFound, "Return to sender. Address unknown."}
