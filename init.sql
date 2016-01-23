@@ -18,3 +18,9 @@ CREATE TABLE `publichouses` (
   `loves` int(4) NOT NULL,
   PRIMARY KEY (`house_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+CREATE TABLE IF NOT EXISTS `tweetedhouses` (
+  `house_id` char(8) NOT NULL,
+  `tweet_id` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`house_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

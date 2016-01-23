@@ -125,6 +125,9 @@ func addPublicAccess(app *app, houseID, html string) error {
 		return err
 	}
 
+	// Tweet about it
+	tweet(app, houseID, title)
+
 	return nil
 }
 
@@ -293,7 +296,7 @@ func viewHouseStats(app *app, w http.ResponseWriter, r *http.Request) error {
 func viewHouses(app *app, w http.ResponseWriter, r *http.Request) error {
 	houses, err := getPublicHouses(app)
 	if err != nil {
-		fmt.Fprintf(w, ":(")
+		fmt.Printf("Couln't load houses: %v", err)
 		return err
 	}
 
@@ -304,7 +307,7 @@ func viewHouses(app *app, w http.ResponseWriter, r *http.Request) error {
 
 func getPublicHouses(app *app) (*[]PublicHouse, error) {
 	houses := []PublicHouse{}
-	rows, err := app.db.Query("SELECT house_id, title, thumb_url FROM publichouses WHERE approved = 1 ORDER BY updated DESC LIMIT 10")
+	rows, err := app.db.Query(fmt.Sprintf("SELECT house_id, title, thumb_url FROM publichouses WHERE approved = 1 ORDER BY updated DESC LIMIT %d", app.cfg.BrowseItems))
 	switch {
 	case err == sql.ErrNoRows:
 		return nil, impart.HTTPError{http.StatusNotFound, "Return to sender. Address unknown."}
