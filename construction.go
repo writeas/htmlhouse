@@ -354,3 +354,21 @@ func banHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 	fmt.Fprintf(w, "BOOM! %s banned.", houseID)
 	return nil
 }
+
+func unbanHouse(app *app, w http.ResponseWriter, r *http.Request) error {
+	houseID := r.FormValue("house")
+	pass := r.FormValue("pass")
+	if app.cfg.AdminPass != pass {
+		w.WriteHeader(http.StatusNotFound)
+		return nil
+	}
+
+	_, err := app.db.Exec("UPDATE publichouses SET approved = 1 WHERE house_id = ?", houseID)
+	if err != nil {
+		fmt.Fprintf(w, "Couldn't ban house: %v", err)
+		return err
+	}
+
+	fmt.Fprintf(w, "boom. Ban on %s reversed.", houseID)
+	return nil
+}

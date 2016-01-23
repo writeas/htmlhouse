@@ -59,6 +59,7 @@ func (app *app) initRouter() {
 
 	admin := app.router.PathPrefix("/admin/").Subrouter()
 	admin.HandleFunc("/unpublish", app.handler(banHouse)).Methods("POST").Name("unpublish")
+	admin.HandleFunc("/republish", app.handler(unbanHouse)).Methods("POST").Name("republish")
 
 	app.router.HandleFunc("/", app.handler(getEditor)).Methods("GET").Name("index")
 	app.router.HandleFunc("/edit/{house:[A-Za-z0-9.-]{8}}.html", app.handler(getEditor)).Methods("GET").Name("edit")
