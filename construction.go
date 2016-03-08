@@ -198,6 +198,19 @@ func getHouseHTML(app *app, houseID string) (string, error) {
 	return html, nil
 }
 
+func getPublicHousesData(app *app, w http.ResponseWriter, r *http.Request) error {
+	houses, err := getPublicHouses(app)
+	if err != nil {
+		return err
+	}
+
+	for i := range *houses {
+		(*houses)[i].process(app)
+	}
+
+	return impart.WriteSuccess(w, houses, http.StatusOK)
+}
+
 // regular expressions for extracting data
 var (
 	htmlReg   = regexp.MustCompile("<html( ?.*)>")

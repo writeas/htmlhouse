@@ -56,6 +56,7 @@ func (app *app) initRouter() {
 	api := app.router.PathPrefix("/⌂/").Subrouter()
 	api.HandleFunc("/create", app.handler(createHouse)).Methods("POST").Name("create")
 	api.HandleFunc("/{house:[A-Za-z0-9.-]{8}}", app.handler(renovateHouse)).Methods("POST").Name("update")
+	api.HandleFunc("/public", app.handler(getPublicHousesData)).Methods("GET").Name("browse-api")
 
 	admin := app.router.PathPrefix("/admin/").Subrouter()
 	admin.HandleFunc("/unpublish", app.handler(banHouse)).Methods("POST").Name("unpublish")
