@@ -199,7 +199,7 @@ func getHouseHTML(app *app, houseID string) (string, error) {
 }
 
 func getPublicHousesData(app *app, w http.ResponseWriter, r *http.Request) error {
-	houses, err := getPublicHouses(app)
+	houses, err := getPublicHouses(app, true)
 	if err != nil {
 		return err
 	}
@@ -307,7 +307,7 @@ func viewHouseStats(app *app, w http.ResponseWriter, r *http.Request) error {
 }
 
 func viewHouses(app *app, w http.ResponseWriter, r *http.Request) error {
-	houses, err := getPublicHouses(app)
+	houses, err := getPublicHouses(app, false)
 	if err != nil {
 		fmt.Printf("Couln't load houses: %v", err)
 		return err
@@ -318,9 +318,13 @@ func viewHouses(app *app, w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func getPublicHouses(app *app) (*[]PublicHouse, error) {
+func getPublicHouses(app *app, deepData bool) (*[]PublicHouse, error) {
 	houses := []PublicHouse{}
-	rows, err := app.db.Query(fmt.Sprintf("SELECT house_id, title, thumb_url FROM publichouses WHERE approved = 1 ORDER BY updated DESC LIMIT %d", app.cfg.BrowseItems))
+	q := fmt.Sprintf("SELECT house_id, title, thumb_url FROM publichouses WHERE approved = 1 ORDER BY updated DESC LIMIT %d", app.cfg.BrowseItems)
+	if deepData {
+		q = fmt.Sprintf("SELECT house_id, title, thumb_url, created, updated, view_count FROM publichouses INNER JOIN houses ON house_id = id WHERE approved = 1 ORDER BY updated DESC LIMIT %d", app.cfg.BrowseItems)
+	}
+	rows, err := app.db.Query(q)
 	switch {
 	case err == sql.ErrNoRows:
 		return nil, impart.HTTPError{http.StatusNotFound, "Return to sender. Address unknown."}
@@ -332,7 +336,11 @@ func getPublicHouses(app *app) (*[]PublicHouse, error) {
 
 	house := &PublicHouse{}
 	for rows.Next() {
-		err = rows.Scan(&house.ID, &house.Title, &house.ThumbURL)
+		if deepData {
+			err = rows.Scan(&house.ID, &house.Title, &house.ThumbURL, &house.Created, &house.Updated, &house.Views)
+		} else {
+			err = rows.Scan(&house.ID, &house.Title, &house.ThumbURL)
+		}
 		houses = append(houses, *house)
 	}
 

@@ -2,14 +2,18 @@ package htmlhouse
 
 import (
 	"fmt"
+	"time"
 )
 
 type (
 	PublicHouse struct {
-		ID       string `json:"id"`
-		Title    string `json:"title"`
-		URL      string `json:"url"`
-		ThumbURL string `json:"thumb_url"`
+		ID       string    `json:"id"`
+		Title    string    `json:"title"`
+		URL      string    `json:"url"`
+		ThumbURL string    `json:"thumb_url"`
+		Created  time.Time `json:"created"`
+		Updated  time.Time `json:"updated"`
+		Views    int       `json:"views"`
 	}
 
 	HouseStats struct {
