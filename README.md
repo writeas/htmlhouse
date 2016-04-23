@@ -11,7 +11,7 @@ No user signup is required -- authorization to modify an individual published pa
 
 It is also available as a [Chrome extension](https://chrome.google.com/webstore/detail/htmlhouse/aljfacibkadhobknaalpfbclcpoepopi) and browsable on [Android](https://play.google.com/store/apps/details?id=com.abunchtell.htmlhouse).
 
-[![Public Slack discussion](http://slack.write.as/badge.svg)](http://slack.write.as/)
+[![#writeas on freenode](https://img.shields.io/badge/freenode-%23writeas-blue.svg)](http://webchat.freenode.net/?channels=writeas) [![Public Slack discussion](http://slack.write.as/badge.svg)](http://slack.write.as/)
 
 ## Development
 
