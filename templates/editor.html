@@ -51,92 +51,94 @@
 <script src="/js/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://write.as/js/h.js"></script>
 <script>
-var publishing = false;
-var $publishBtn = $("#publish");
-var $publicCheck = document.getElementById("public");
-{{if .ID}}{{else}}var orig = "{{.Content}}";
-$publishBtn.addClass("no");{{end}}
+(function() {
+	var publishing = false;
+	var $publishBtn = $("#publish");
+	var $publicCheck = document.getElementById("public");
+	{{if .ID}}{{else}}var orig = "{{.Content}}";
+	$publishBtn.addClass("no");{{end}}
 
-var houses = JSON.parse(H.get('neighborhood', '[]'));
-var hasBuilt = houses.length > 0;
-function updatePreview() {
-	var val = editor.getSession().getValue();
-	$view.contents().find('body').html(val);
-	{{if .ID}}{{else}}if (val != orig) {
-		publishing = false;
-		$publishBtn.removeClass("no");
-		$publishBtn.text("publish");
-	} else {
-		publishing = true;
-		$publishBtn.addClass("no");
-		$publishBtn.text("publish" + (!hasBuilt ? " (edit first)" : ""));
+	var houses = JSON.parse(H.get('neighborhood', '[]'));
+	var hasBuilt = houses.length > 0;
+	function updatePreview() {
+		var val = editor.getSession().getValue();
+		$view.contents().find('body').html(val);
+		{{if .ID}}{{else}}if (val != orig) {
+			publishing = false;
+			$publishBtn.removeClass("no");
+			$publishBtn.text("publish");
+		} else {
+			publishing = true;
+			$publishBtn.addClass("no");
+			$publishBtn.text("publish" + (!hasBuilt ? " (edit first)" : ""));
+		}{{end}}
+	}
+	var justPublished = false;
+	var editor = ace.edit("editor");
+	var $view = $('#preview');
+	editor.setTheme("ace/theme/chrome");
+	editor.session.setMode("ace/mode/html");
+	editor.getSession().on('change', updatePreview);
+	{{if .ID}}{{else}}var saved = H.get('constructionSite', '');
+	if (saved !== '') {
+		editor.setValue(saved);
 	}{{end}}
-}
-var justPublished = false;
-var editor = ace.edit("editor");
-var $view = $('#preview');
-editor.setTheme("ace/theme/chrome");
-editor.session.setMode("ace/mode/html");
-editor.getSession().on('change', updatePreview);
-{{if .ID}}{{else}}var saved = H.get('constructionSite', '');
-if (saved !== '') {
-	editor.setValue(saved);
-}{{end}}
-updatePreview();
+	updatePreview();
 
-{{if .ID}}{{else}}window.addEventListener('beforeunload', function(e) {
-	if (!justPublished) {
-		H.set('constructionSite', editor.getSession().getValue());
-	}
-	return null;
-});{{end}}
-
-if (hasBuilt) {
-	$('header').append('<a href="/houses.html">my pages</a>');
-}
-{{if .ID}}var token;
-for (var i=0; i<houses.length; i++) {
-	if (houses[i].id == "{{.ID}}") {
-		token = houses[i].token;
-		break;
-	}
-}
-if (typeof token === "undefined") {
-	$publishBtn.addClass("no");
-}{{else}}
-{{end}}
-$publishBtn.on('click', function(e) {
-	e.preventDefault();
-	if (publishing) {
-		return;
-	}
-	publishing = true;
-	$.ajax({
-		type: "POST",
-		url: "/⌂/{{if .ID}}{{.ID}}{{else}}create{{end}}",{{if .ID}} 
-		beforeSend: function (request) {
-			request.setRequestHeader("Authorization", token);
-		},{{end}}
-		data: {html: editor.getSession().getValue(), public: $publicCheck.checked ? "true" : ""},
-		success: function(data, status, xhr) {
-			publishing = false;
-			{{if .ID}}if (data.meta.code == 200) { {{else}}if (data.meta.code == 201) {
-				var houses = JSON.parse(H.get('neighborhood', '[]'));
-				houses.push({id: data.data.id, token: xhr.getResponseHeader('Authorization')});
-				H.set('neighborhood', JSON.stringify(houses));{{end}}
-				justPublished = true;
-				{{if .ID}}{{else}}H.remove('constructionSite');{{end}}
-				window.location = '/' + data.data.id + '.html';
-			} else {
-				alert(data.meta.error_msg);
-			}
-		},
-		error: function(jqXHR, status, error) {
-			publishing = false;
-			alert(error);
+	{{if .ID}}{{else}}window.addEventListener('beforeunload', function(e) {
+		if (!justPublished) {
+			H.set('constructionSite', editor.getSession().getValue());
 		}
+		return null;
+	});{{end}}
+
+	if (hasBuilt) {
+		$('header').append('<a href="/houses.html">my pages</a>');
+	}
+	{{if .ID}}var token;
+	for (var i=0; i<houses.length; i++) {
+		if (houses[i].id == "{{.ID}}") {
+			token = houses[i].token;
+			break;
+		}
+	}
+	if (typeof token === "undefined") {
+		$publishBtn.addClass("no");
+	}{{else}}
+	{{end}}
+	$publishBtn.on('click', function(e) {
+		e.preventDefault();
+		if (publishing) {
+			return;
+		}
+		publishing = true;
+		$.ajax({
+			type: "POST",
+			url: "/⌂/{{if .ID}}{{.ID}}{{else}}create{{end}}",{{if .ID}} 
+			beforeSend: function (request) {
+				request.setRequestHeader("Authorization", token);
+			},{{end}}
+			data: {html: editor.getSession().getValue(), public: $publicCheck.checked ? "true" : ""},
+			success: function(data, status, xhr) {
+				publishing = false;
+				{{if .ID}}if (data.meta.code == 200) { {{else}}if (data.meta.code == 201) {
+					var houses = JSON.parse(H.get('neighborhood', '[]'));
+					houses.push({id: data.data.id, token: xhr.getResponseHeader('Authorization')});
+					H.set('neighborhood', JSON.stringify(houses));{{end}}
+					justPublished = true;
+					{{if .ID}}{{else}}H.remove('constructionSite');{{end}}
+					window.location = '/' + data.data.id + '.html';
+				} else {
+					alert(data.meta.error_msg);
+				}
+			},
+			error: function(jqXHR, status, error) {
+				publishing = false;
+				alert(error);
+			}
+		});
 	});
-});
+})();
 </script>
 <script type="text/javascript">
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
