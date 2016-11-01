@@ -66,7 +66,8 @@ func (m *defaultSessionManager) readToken(r *http.Request) (string, error) {
 			return "", nil
 		}
 
-		houseID := token.Claims["houseID"].(string)
+		claims := token.Claims.(jwt.MapClaims)
+		houseID := claims["houseID"].(string)
 
 		return houseID, nil
 	case *jwt.ValidationError:
@@ -78,7 +79,8 @@ func (m *defaultSessionManager) readToken(r *http.Request) (string, error) {
 
 func (m *defaultSessionManager) createToken(houseID string) (string, error) {
 	token := jwt.New(jwt.SigningMethodRS512)
-	token.Claims["houseID"] = houseID
+	claims := token.Claims.(jwt.MapClaims)
+	claims["houseID"] = houseID
 
 	tokenString, err := token.SignedString(m.signKey)
 	if err != nil {
