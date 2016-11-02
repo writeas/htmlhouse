@@ -6,7 +6,7 @@ endif
 export LESSC
 
 all :
-	$(LESSC) -x app.less house.css
+	$(LESSC) app.less --clean-css="--s1 --advanced --compatibility=ie8" house.css
 
 local : all
 

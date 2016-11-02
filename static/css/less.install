@@ -4,6 +4,7 @@
 if [ ! -e "$(which lessc)" ] ; then
     if [ ! -e "node_modules/.bin/lessc" ] ; then
         npm install less
+        npm install less-plugin-clean-css
     fi
 else
     echo LESS $(npm view less version 2>&1 | grep -v WARN) is installed
