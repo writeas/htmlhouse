@@ -1,0 +1,29 @@
+{
+  "name": "HTMLhouse",
+  "description": "An application for sharing HTML quickly.",
+  "repository": {
+    "url": "https://github.com/writeas/htmlhouse",
+    "license": "MIT"
+  },
+  "participate": {
+    "docs": "",
+    "irc": "irc://irc.freenode.net/writeas",
+    "irc-contacts": [
+      "thebaer"
+    ]
+  },
+  "bugs": {
+    "list": "https://github.com/writeas/htmlhouse/issues",
+    "report": "https://github.com/writeas/htmlhouse/issues/new"
+  },
+  "urls": {
+    "prod": "https://html.house"
+  },
+  "keywords": [
+    "go",
+    "golang",
+    "less-css",
+    "html5",
+    "javascript"
+  ]
+}
