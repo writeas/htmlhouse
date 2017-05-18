@@ -23,6 +23,7 @@ cp static/*.html build/static/
 cp static/css/*.css build/static/css/
 cp -r static/js/* build/static/js/
 cp -r templates/ build/
+cp keys.sh build/
 
 echo -e "$L Building application..."
 cd main/
