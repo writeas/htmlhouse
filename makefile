@@ -2,7 +2,7 @@
 all : local
 
 install : 
-	./keys.sh
+	./keys.sh gen
 	cd static/; $(MAKE) install $(MFLAGS)
 	
 local : force_look
