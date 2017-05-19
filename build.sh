@@ -24,6 +24,7 @@ cp static/css/*.css build/static/css/
 cp -r static/js/* build/static/js/
 cp -r templates/ build/
 cp keys.sh build/
+cp INSTALL build/
 
 echo -e "$L Building application..."
 cd main/

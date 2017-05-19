@@ -1,0 +1,18 @@
+
+INSTALLING HTMLHOUSE
+--------------------
+
+1. Extract the archive.
+2. Run keys.sh to generate keys. This will generate a keypair in the
+   application's directory named `prod` and `prod.pub`.
+   BACK UP THESE FILES outside the application directory. If these change, 
+   users won't be able to edit their posts anymore.
+3. Run the application. Here's an example script:
+
+   export DB_USER=dbuser
+   export DB_PASSWORD=pass
+   export DB_DB=htmlhouse
+   export PRIVATE_KEY=keys/prod
+   export PUBLIC_KEY=keys/prod.pub
+   export PORT=8080
+   ./htmlhouse -h="http://localhost:8080"
