@@ -62,7 +62,11 @@
 	var hasBuilt = houses.length > 0;
 	function updatePreview() {
 		var val = editor.getSession().getValue();
-		$view.contents().find('body').html(val);
+		try {
+  			$view.contents().find("body").html(val);
+		} catch (err) {
+  			console.error(err);
+		}
 		{{if .ID}}{{else}}if (val != orig) {
 			publishing = false;
 			$publishBtn.removeClass("no");
