@@ -5,8 +5,10 @@ else
 endif
 export LESSC
 
+CSSDIR=../static/css/
+
 all :
-	$(LESSC) app.less --clean-css="--s1 --advanced --compatibility=ie8" house.css
+	$(LESSC) app.less --clean-css="--s1 --advanced --compatibility=ie8" $(CSSDIR)house.css
 
 local : all
 
@@ -18,4 +20,4 @@ install :
 	./less.install
 
 clean :
-	rm -f house.css
+	rm -f $(CSSDIR)house.css

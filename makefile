@@ -3,16 +3,16 @@ all : local
 
 install : 
 	./keys.sh gen
-	cd static/; $(MAKE) install $(MFLAGS)
+	cd less/; $(MAKE) install $(MFLAGS)
 	
 local : force_look
-	cd static/; $(MAKE) $(MFLAGS)
+	cd less/; $(MAKE) $(MFLAGS)
 	
 development : force_look
-	cd static/; $(MAKE) development $(MFLAGS)
+	cd less/; $(MAKE) development $(MFLAGS)
 	
 production : force_look
-	cd static/; $(MAKE) production $(MFLAGS)
+	cd less/; $(MAKE) production $(MFLAGS)
 	./build.sh
 
 hidden : production
