@@ -52,6 +52,7 @@ DB_USER=dbuser DB_PASSWORD=pass DB_DB=htmlhouse PRIVATE_KEY=keys/dev PUBLIC_KEY=
 | `PORT` | Port to run app on | `8080` |
 | `STATIC_DIR` | Relative dir where static files are stored | `static` |
 | `AUTO_APPROVE` | Automatically approves public posts | false |
+| `PREVIEWS_HOST` | Fully-qualified URL (without trailing slash) of screenshot server | None. |
 | `TWITTER_KEY` | Twitter consumer key | `notreal` |
 | `TWITTER_SECRET` | Twitter consumer secret | `notreal` |
 | `TWITTER_TOKEN` | Twitter access token of the posting Twitter account | `notreal` |

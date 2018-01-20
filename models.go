@@ -7,13 +7,14 @@ import (
 
 type (
 	PublicHouse struct {
-		ID       string    `json:"id"`
-		Title    string    `json:"title"`
-		URL      string    `json:"url"`
-		ThumbURL string    `json:"thumb_url"`
-		Created  time.Time `json:"created"`
-		Updated  time.Time `json:"updated"`
-		Views    int       `json:"views"`
+		ID        string    `json:"id"`
+		Title     string    `json:"title"`
+		URL       string    `json:"url"`
+		thumbHost string    `json:"-"`
+		ThumbURL  string    `json:"thumb_url"`
+		Created   time.Time `json:"created"`
+		Updated   time.Time `json:"updated"`
+		Views     int       `json:"views"`
 	}
 
 	HouseStats struct {
@@ -30,6 +31,6 @@ type (
 func (h *PublicHouse) process(app *app) {
 	h.URL = fmt.Sprintf("%s/%s.html", app.cfg.HostName, h.ID)
 	if h.ThumbURL != "" {
-		h.ThumbURL = "https://peeper.html.house/" + h.ThumbURL
+		h.ThumbURL = fmt.Sprintf("%s/%s", app.cfg.PreviewsHost, h.ThumbURL)
 	}
 }

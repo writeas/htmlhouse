@@ -18,9 +18,10 @@ type config struct {
 	HostName   string `env:"key=HOST default=https://html.house"`
 	ServerPort int    `env:"key=PORT default=8080"`
 
-	AutoApprove bool   `env:"key=AUTO_APPROVE default=false"`
-	AdminPass   string `env:"key=ADMIN_PASS default=uhoh"`
-	BrowseItems int    `env:"key=BROWSE_ITEMS default=10"`
+	AutoApprove  bool   `env:"key=AUTO_APPROVE default=false"`
+	PreviewsHost string `env:"key=PREVIEWS_HOST`
+	AdminPass    string `env:"key=ADMIN_PASS default=uhoh"`
+	BrowseItems  int    `env:"key=BROWSE_ITEMS default=10"`
 
 	// Twitter configuration
 	TwitterConsumerKey    string `env:"key=TWITTER_KEY default=notreal"`

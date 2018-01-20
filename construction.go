@@ -89,7 +89,7 @@ func addPublicAccess(app *app, houseID, html string) error {
 	data := url.Values{}
 	data.Set("url", fmt.Sprintf("%s/%s.html", app.cfg.HostName, houseID))
 
-	u, err := url.ParseRequestURI("https://peeper.html.house")
+	u, err := url.ParseRequestURI(app.cfg.PreviewsHost)
 	u.Path = "/"
 	urlStr := fmt.Sprintf("%v", u)
 

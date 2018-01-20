@@ -39,7 +39,7 @@
 		</header>
 
 		{{ range .Houses }}<div class="open-house">
-			<a href="/{{.ID}}.html"><img src="https://peeper.html.house/{{.ThumbURL}}" />
+			<a href="/{{.ID}}.html"><img src="{{.thumbHost}}/{{.ThumbURL}}" />
 			<div class="house-name">{{.Title}}</div></a>
 		</div>{{end}}
 
