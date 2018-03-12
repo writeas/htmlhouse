@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -38,7 +39,7 @@ func createHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 
 	resUser := newSessionInfo(houseID)
 
-	if public {
+	if public && passesPublicFilter(app, html) {
 		go addPublicAccess(app, houseID, html)
 	}
 
@@ -90,6 +91,10 @@ func addPublicAccess(app *app, houseID, html string) error {
 	data.Set("url", fmt.Sprintf("%s/%s.html", app.cfg.HostName, houseID))
 
 	u, err := url.ParseRequestURI(app.cfg.PreviewsHost)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error parsing request URI: %v\n", err)
+		return err
+	}
 	u.Path = "/"
 	urlStr := fmt.Sprintf("%v", u)
 

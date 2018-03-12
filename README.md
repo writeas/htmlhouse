@@ -53,6 +53,9 @@ DB_USER=dbuser DB_PASSWORD=pass DB_DB=htmlhouse PRIVATE_KEY=keys/dev PUBLIC_KEY=
 | `STATIC_DIR` | Relative dir where static files are stored | `static` |
 | `AUTO_APPROVE` | Automatically approves public posts | false |
 | `PREVIEWS_HOST` | Fully-qualified URL (without trailing slash) of screenshot server | None. |
+| `ADMIN_PASS` | Password to perform admin functions via API | `uhoh` |
+| `BROWSE_ITEMS` | Number of items to show on Browse page | 10 |
+| `BLACKLIST_TERMS` | Comma-separated list of terms to prevent a post from being made public | None. |
 | `TWITTER_KEY` | Twitter consumer key | `notreal` |
 | `TWITTER_SECRET` | Twitter consumer secret | `notreal` |
 | `TWITTER_TOKEN` | Twitter access token of the posting Twitter account | `notreal` |

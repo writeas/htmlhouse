@@ -125,7 +125,7 @@
 			data: {html: editor.getSession().getValue(), public: $publicCheck.checked ? "true" : ""},
 			success: function(data, status, xhr) {
 				publishing = false;
-				{{if .ID}}if (data.meta.code == 200) { {{else}}if (data.meta.code == 201) {
+				{{if .ID}}if (data.code == 200) { {{else}}if (data.code == 201) {
 					var houses = JSON.parse(H.get('neighborhood', '[]'));
 					houses.push({id: data.data.id, token: xhr.getResponseHeader('Authorization')});
 					H.set('neighborhood', JSON.stringify(houses));{{end}}
@@ -133,7 +133,7 @@
 					{{if .ID}}{{else}}H.remove('constructionSite');{{end}}
 					window.location = '/' + data.data.id + '.html';
 				} else {
-					alert(data.meta.error_msg);
+					alert(data.error_msg);
 				}
 			},
 			error: function(jqXHR, status, error) {
