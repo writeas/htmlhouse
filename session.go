@@ -1,6 +1,7 @@
 package htmlhouse
 
 import (
+	"crypto/rsa"
 	"fmt"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/juju/errgo"
@@ -30,22 +31,32 @@ func newSessionInfo(houseID string) *sessionInfo {
 func newSessionManager(cfg *config) (sessionManager, error) {
 	mgr := &defaultSessionManager{}
 
-	var err error
-
-	mgr.signKey, err = ioutil.ReadFile(cfg.PrivateKey)
+	// Read and parse private key
+	signBytes, err := ioutil.ReadFile(cfg.PrivateKey)
+	if err != nil {
+		return mgr, errgo.Mask(err)
+	}
+	mgr.signKey, err = jwt.ParseRSAPrivateKeyFromPEM(signBytes)
 	if err != nil {
 		return mgr, errgo.Mask(err)
 	}
 
-	mgr.verifyKey, err = ioutil.ReadFile(cfg.PublicKey)
+	// Read and parse public key
+	verifyBytes, err := ioutil.ReadFile(cfg.PublicKey)
 	if err != nil {
 		return mgr, errgo.Mask(err)
 	}
+	mgr.verifyKey, err = jwt.ParseRSAPublicKeyFromPEM(verifyBytes)
+	if err != nil {
+		return mgr, errgo.Mask(err)
+	}
+
 	return mgr, nil
 }
 
 type defaultSessionManager struct {
-	verifyKey, signKey []byte
+	verifyKey *rsa.PublicKey
+	signKey   *rsa.PrivateKey
 }
 
 func (m *defaultSessionManager) readToken(r *http.Request) (string, error) {
