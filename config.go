@@ -2,6 +2,8 @@ package htmlhouse
 
 import (
 	"github.com/danryan/env"
+	"regexp"
+	"strings"
 )
 
 type config struct {
@@ -23,6 +25,9 @@ type config struct {
 	AdminPass    string `env:"key=ADMIN_PASS default=uhoh"`
 	BrowseItems  int    `env:"key=BROWSE_ITEMS default=10"`
 
+	BlacklistTerms string `env:"key=BLACKLIST_TERMS"`
+	BlacklistReg   *regexp.Regexp
+
 	// Twitter configuration
 	TwitterConsumerKey    string `env:"key=TWITTER_KEY default=notreal"`
 	TwitterConsumerSecret string `env:"key=TWITTER_SECRET default=notreal"`
@@ -36,5 +41,11 @@ func newConfig() (*config, error) {
 		return cfg, err
 	}
 
+	// Process anything
+	termsReg := `(?i)\b` + cfg.BlacklistTerms + `\b`
+	termsReg = strings.Replace(termsReg, ",", `\b|\b`, -1)
+	cfg.BlacklistReg = regexp.MustCompile(termsReg)
+
+	// Return result
 	return cfg, nil
 }

@@ -39,7 +39,7 @@ func createHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 
 	resUser := newSessionInfo(houseID)
 
-	if public {
+	if public && passesPublicFilter(app, html) {
 		go addPublicAccess(app, houseID, html)
 	}
 
