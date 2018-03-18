@@ -236,8 +236,9 @@ func getHouse(app *app, w http.ResponseWriter, r *http.Request) error {
 				if err != nil {
 					page = []byte("<!DOCTYPE html><html><body>HTMLlot.</body></html>")
 				}
+				w.WriteHeader(http.StatusNotFound)
 				fmt.Fprintf(w, "%s", page)
-				return nil
+				return err
 			}
 		}
 		return err
