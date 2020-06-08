@@ -37,8 +37,10 @@
 				<a href="/contact.html">contact</a>
 			</nav>
 			{{if .ID}}<a href="/{{.ID}}.html">view</a>{{end}}
-			<a id="publish" href="#">{{if .ID}}update{{else}}publish{{end}}</a>
-			<input type="checkbox" name="public" id="public"{{if .Public}} checked="checked"{{end}} /><label for="public">public</label>
+			{{if .AllowPublish}}
+				<a id="publish" href="#">{{if .ID}}update{{else}}publish{{end}}</a>
+				<input type="checkbox" name="public" id="public"{{if .Public}} checked="checked"{{end}} /><label for="public">public</label>
+            {{end}}
 		</header>
 
 		<pre id="editor">{{.Content}}</pre>

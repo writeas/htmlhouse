@@ -51,6 +51,7 @@ DB_USER=dbuser DB_PASSWORD=pass DB_DB=htmlhouse PRIVATE_KEY=keys/dev PUBLIC_KEY=
 | `PUBLIC_KEY` | Generated public key | None. **Required** |
 | `PORT` | Port to run app on | `8080` |
 | `STATIC_DIR` | Relative dir where static files are stored | `static` |
+| `ALLOW_PUBLISH` | Allow users to publish posts | true |
 | `AUTO_APPROVE` | Automatically approves public posts | false |
 | `PREVIEWS_HOST` | Fully-qualified URL (without trailing slash) of screenshot server | None. |
 | `ADMIN_PASS` | Password to perform admin functions via API | `uhoh` |

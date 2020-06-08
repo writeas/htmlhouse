@@ -21,6 +21,7 @@ type config struct {
 	ServerPort int    `env:"key=PORT default=8080"`
 
 	AutoApprove  bool   `env:"key=AUTO_APPROVE default=false"`
+	AllowPublish bool   `env:"key=ALLOW_PUBLISH default=true"`
 	PreviewsHost string `env:"key=PREVIEWS_HOST`
 	AdminPass    string `env:"key=ADMIN_PASS default=uhoh"`
 	BrowseItems  int    `env:"key=BROWSE_ITEMS default=10"`

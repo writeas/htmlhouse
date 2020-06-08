@@ -54,7 +54,9 @@ func (app *app) initRouter() {
 	app.router = mux.NewRouter()
 
 	api := app.router.PathPrefix("/⌂/").Subrouter()
-	api.HandleFunc("/create", app.handler(createHouse)).Methods("POST").Name("create")
+	if app.cfg.AllowPublish {
+		api.HandleFunc("/create", app.handler(createHouse)).Methods("POST").Name("create")
+	}
 	api.HandleFunc("/{house:[A-Za-z0-9.-]{8}}", app.handler(renovateHouse)).Methods("POST").Name("update")
 	api.HandleFunc("/public", app.handler(getPublicHousesData)).Methods("GET").Name("browse-api")
 
@@ -74,6 +76,8 @@ type EditorPage struct {
 	ID      string
 	Content string
 	Public  bool
+
+	AllowPublish bool
 }
 
 func getEditor(app *app, w http.ResponseWriter, r *http.Request) error {
@@ -86,7 +90,10 @@ func getEditor(app *app, w http.ResponseWriter, r *http.Request) error {
 			fmt.Printf("\n%s\n", err)
 			defaultPage = []byte("<!DOCTYPE html>\n<html>\n</html>")
 		}
-		app.templates["editor"].ExecuteTemplate(w, "editor", &EditorPage{"", string(defaultPage), false})
+		app.templates["editor"].ExecuteTemplate(w, "editor", &EditorPage{
+			Content:      string(defaultPage),
+			AllowPublish: app.cfg.AllowPublish,
+		})
 
 		return nil
 	}
@@ -96,7 +103,12 @@ func getEditor(app *app, w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	app.templates["editor"].ExecuteTemplate(w, "editor", &EditorPage{house, html, isHousePublic(app, house)})
+	app.templates["editor"].ExecuteTemplate(w, "editor", &EditorPage{
+		ID:           house,
+		Content:      html,
+		Public:       isHousePublic(app, house),
+		AllowPublish: app.cfg.AllowPublish,
+	})
 	return nil
 }
 
