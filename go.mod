@@ -14,6 +14,7 @@ require (
 	github.com/garyburd/go-oauth v0.0.0-20180319155456-bca2e7f09a17 // indirect
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gorilla/mux v1.8.0
+	github.com/joho/godotenv v1.3.0
 	github.com/juju/errgo v0.0.0-20140925100237-08cceb5d0b53
 	github.com/writeas/impart v1.1.1
 	github.com/writeas/nerds v1.0.0
