@@ -29,6 +29,9 @@ type config struct {
 	BlacklistTerms string `env:"key=BLACKLIST_TERMS"`
 	BlacklistReg   *regexp.Regexp
 
+	// Mode
+	WFMode bool `env:"key=WF_MODE"`
+
 	// Twitter configuration
 	TwitterConsumerKey    string `env:"key=TWITTER_KEY default=notreal"`
 	TwitterConsumerSecret string `env:"key=TWITTER_SECRET default=notreal"`

@@ -20,6 +20,7 @@ func (app *app) initTemplates() {
 
 	// Initialize dynamic pages
 	initTemplate(app, "editor")
+	initTemplate(app, "wf-editor")
 	initTemplate(app, "stats")
 	initTemplate(app, "browse")
 }

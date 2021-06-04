@@ -61,6 +61,7 @@ DB_USER=dbuser DB_PASSWORD=pass DB_DB=htmlhouse PRIVATE_KEY=keys/dev PUBLIC_KEY=
 | `TWITTER_SECRET` | Twitter consumer secret | `notreal` |
 | `TWITTER_TOKEN` | Twitter access token of the posting Twitter account | `notreal` |
 | `TWITTER_TOKEN_SECRET` | Twitter access token secret of the posting Twitter account | `notreal` |
+| `WF_MODE` | Run CSShorse, not HTMLhouse — for customizing WriteFreely blogs | `false` |
 
 ### Notes
 

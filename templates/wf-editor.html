@@ -2,7 +2,7 @@
 <html>
 	<head>
 
-		<title>HTMLhouse</title>
+		<title>CSShorse</title>
 		
 		<link rel="stylesheet" type="text/css" href="/css/house.css" />
 		<link rel="shortcut icon" href="/favicon.ico" />
@@ -10,40 +10,39 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="theme-color" content="#888888" />
 
-		<meta name="description" content="Publish HTML with HTMLhouse.">
-		<meta name="application-name" content="HTMLhouse">
+		<meta name="description" content="Publish HTML with CSShorse.">
+		<meta name="application-name" content="CSShorse">
 		<meta name="application-url" content="https://html.house">
-		<meta itemprop="name" content="HTMLhouse">
-		<meta itemprop="description" content="Publish HTML with HTMLhouse.">
+		<meta itemprop="name" content="CSShorse">
+		<meta itemprop="description" content="Publish HTML with CSShorse.">
 		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:site" content="@HTMLhouse">
 		<meta name="twitter:title" content="HTMLhouse">
-		<meta name="twitter:description" content="Publish HTML with HTMLhouse.">
-		<meta property="og:title" content="HTMLhouse" />
-		<meta property="og:site_name" content="HTMLhouse" />
+		<meta name="twitter:description" content="Publish HTML with CSShorse.">
+		<meta property="og:title" content="CSShorse" />
+		<meta property="og:site_name" content="CSShorse" />
 		<meta property="og:type" content="object" />
 		<meta property="og:url" content="https://html.house/" />
-		<meta property="og:description" content="Publish HTML with HTMLhouse." />
+		<meta property="og:description" content="Publish HTML with CSShorse." />
 
 	</head>
 	<body>
 		
 		<header>
-			<h1>HTMLhouse</h1>
+			<h1>CSShorse</h1>
 			<nav>
-				{{if .ID}}<a class="home" href="/">&lt;&#8962;/&gt;</a>{{end}}
-				<a href="/browse">browse</a>
+				{{if .ID}}<a class="home" href="/">&lt;&#128052;/&gt;</a>{{end}}
 				<a href="/about.html">about</a>
 				<a href="/contact.html">contact</a>
 			</nav>
-			{{if .ID}}<a href="/{{.ID}}.html">view</a>{{end}}
+			{{if .ID}}<a href="{{.SiteURL}}" target="site">view</a>{{end}}
 			{{if .AllowPublish}}
 				<a id="publish" href="#">{{if .ID}}update{{else}}publish{{end}}</a>
 				<input type="checkbox" name="public" id="public"{{if .Public}} checked="checked"{{end}} /><label for="public">public</label>
             {{end}}
 		</header>
 
-		<pre id="editor" class="editor">{{.Content}}</pre>
+		<pre id="css-editor" class="editor"></pre>
 
 		<div id="preview-wrap">
 			<iframe id="preview"></iframe>
@@ -53,6 +52,7 @@
 <script src="/js/ace.js" type="text/javascript" charset="utf-8"></script>
 <script src="/js/h.js"></script>
 <script>
+let style;
 (function() {
 	var publishing = false;
 	var $publishBtn = $("#publish");
@@ -65,7 +65,7 @@
 	function updatePreview() {
 		var val = editor.getSession().getValue();
 		try {
-  			$view.contents().find("body").html(val);
+  			$view.contents().find("head").find("style").html(val);
 		} catch (err) {
   			console.error(err);
 		}
@@ -80,16 +80,30 @@
 		}{{end}}
 	}
 	var justPublished = false;
-	var editor = ace.edit("editor");
+	var editor = ace.edit("css-editor");
 	var $view = $('#preview');
 	editor.setTheme("ace/theme/chrome");
-	editor.session.setMode("ace/mode/html");
+	editor.session.setMode("ace/mode/css");
 	editor.getSession().on('change', updatePreview);
 	{{if .ID}}{{else}}var saved = H.get('constructionSite', '');
 	if (saved !== '') {
-		editor.setValue(saved);
+		//editor.setValue(saved);
 	}{{end}}
-	updatePreview();
+
+	// Populate initial page
+	var iframe = document.getElementById('preview');
+	iframe = iframe.contentWindow || ( iframe.contentDocument.document || iframe.contentDocument);
+	iframe.document.open();
+	iframe.document.write('{{.Content}}');
+	iframe.document.close();
+	$view.on("load", function() {
+		style = $view.contents().find("head").find("style").get(0)
+		if (typeof style !== "undefined") {
+			editor.setValue(style.innerHTML)
+		} else {
+			$view.contents().find("head").append('<style type="text/css"></style>');
+		}
+	});
 
 	{{if .ID}}{{else}}window.addEventListener('beforeunload', function(e) {
 		if (!justPublished) {
@@ -145,19 +159,17 @@
 		});
 	});
   var _paq = _paq || [];
-  _paq.push(["setCookieDomain", "*.html.house"]);
-  _paq.push(["setDomains", ["*.html.house"]]);
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   (function() {
     var u="//analytics.write.as/";
     _paq.push(['setTrackerUrl', u+'piwik.php']);
-    _paq.push(['setSiteId', 3]);
+    _paq.push(['setSiteId', 34]);
     var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
     g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
   })();
 })();
 </script>
-<noscript><p><img src="//analytics.write.as/piwik.php?idsite=3" style="border:0;" alt="" /></p></noscript>
+<noscript><p><img src="//analytics.write.as/piwik.php?idsite=34" style="border:0;" alt="" /></p></noscript>
 	</body>
 </html>{{end}}
