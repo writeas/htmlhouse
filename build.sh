@@ -27,8 +27,8 @@ cp keys.sh build/
 cp INSTALL build/
 
 echo -e "$L Building application..."
-cd main/
+cd cmd/htmlhouse/
 go build -o htmlhouse
-mv htmlhouse ../build/
+mv htmlhouse ../../build/
 
 echo -e "$S Done."

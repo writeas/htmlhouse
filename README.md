@@ -31,7 +31,7 @@ It is also available as a [Chrome extension](https://chrome.google.com/webstore/
 
 ### Running the server
 
-* Run `go run main/main.go` in the top level directory, optionally by creating a simple run script
+* Run `go run cmd/htmlhouse/main.go` in the top level directory, optionally by creating a simple run script
 ```bash
 #!/bin/bash
 
